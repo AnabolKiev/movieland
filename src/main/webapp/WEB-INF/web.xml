@@ -15,7 +15,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>action</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/v1/*</url-pattern>
     </servlet-mapping>
 
 </web-app>
