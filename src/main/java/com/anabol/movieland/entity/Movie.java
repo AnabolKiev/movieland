@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Movie {
-    public interface PublicView {};
+    public interface PublicView {}
 
     @JsonView(PublicView.class)
     private int id;
