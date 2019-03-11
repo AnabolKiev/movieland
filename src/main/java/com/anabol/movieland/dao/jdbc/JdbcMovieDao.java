@@ -13,8 +13,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JdbcMovieDao implements MovieDao {
     private static final MovieMapper MOVIE_MAPPER = new MovieMapper();
-    private static final String GET_ALL_QUERY = "SELECT id, nameRussian, nameNative, yearOfRelease, description, " +
-            "rating, price, picturePath FROM movie";
+    private static final String GET_ALL_QUERY = "SELECT id, nameRussian, nameNative, yearOfRelease, rating, price, " +
+            "picturePath FROM movie";
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 

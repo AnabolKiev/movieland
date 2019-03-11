@@ -19,7 +19,6 @@ public class MovieMapperTest {
         when(resultSetMock.getInt("id")).thenReturn(1);
         when(resultSetMock.getString("nameRussian")).thenReturn("Фильм");
         when(resultSetMock.getString("nameNative")).thenReturn("Movie");
-        when(resultSetMock.getString("description")).thenReturn("Фильм о том, как писать тесты");
         when(resultSetMock.getString("yearOfRelease")).thenReturn("2019");
         when(resultSetMock.getDouble("rating")).thenReturn(7.99);
         when(resultSetMock.getDouble("price")).thenReturn(99.99);
@@ -31,12 +30,10 @@ public class MovieMapperTest {
         assertEquals(1, movie.getId());
         assertEquals("Фильм", movie.getNameRussian());
         assertEquals("Movie", movie.getNameNative());
-        assertEquals("Фильм о том, как писать тесты", movie.getDescription());
         assertEquals("2019", movie.getYearOfRelease());
         assertEquals(7.99, movie.getRating(), 0.001);
         assertEquals(99.99, movie.getPrice(), 0.001);
         assertEquals("http://images.com/1.jpg", movie.getPicturePath());
     }
-
 
 }
