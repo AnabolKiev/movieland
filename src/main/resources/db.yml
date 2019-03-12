@@ -1,0 +1,8 @@
+db:
+  url: jdbc:mysql://sql7.freemysqlhosting.net:3306/sql7281012
+  username: sql7281012
+  password: VrWWk6FjKA
+  maxTotal: 20
+  minIdle: 2
+  maxIdle: 10
+  maxWaitMillis: 10000
