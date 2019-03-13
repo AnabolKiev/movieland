@@ -1,7 +1,13 @@
 package com.anabol.movieland.entity;
 
-/**
- * Created by AnabolKiev on 12.03.2019.
- */
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class Genre {
+    private int id;
+    private String name;
 }

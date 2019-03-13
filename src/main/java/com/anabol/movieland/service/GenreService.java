@@ -1,7 +1,9 @@
 package com.anabol.movieland.service;
 
-/**
- * Created by AnabolKiev on 12.03.2019.
- */
+import com.anabol.movieland.entity.Genre;
+
+import java.util.List;
+
 public interface GenreService {
+    List<Genre> getAll();
 }

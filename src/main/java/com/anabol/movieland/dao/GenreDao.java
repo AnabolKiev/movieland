@@ -1,7 +1,9 @@
-package com.anabol.movieland.dao.jdbc;
+package com.anabol.movieland.dao;
 
-/**
- * Created by AnabolKiev on 13.03.2019.
- */
+import com.anabol.movieland.entity.Genre;
+
+import java.util.List;
+
 public interface GenreDao {
+    public List<Genre> getAll();
 }
