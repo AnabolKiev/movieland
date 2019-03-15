@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -43,10 +44,7 @@ public class MovieControllerTest {
         //stubbing and verified behavior would "leak" from one test to another.
         Mockito.reset(movieServiceMock);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
 
-    @Test
-    public void testGetAll() throws Exception {
         Movie firstMovie = new Movie();
         firstMovie.setId(1);
         firstMovie.setNameRussian("Первый фильм");
@@ -67,8 +65,13 @@ public class MovieControllerTest {
         secondMovie.setPrice(111.22);
         secondMovie.setPicturePath("http://images.com/2.jpg");
 
-        when(movieServiceMock.getAll()).thenReturn(Arrays.asList(firstMovie, secondMovie));
+        List<Movie> movies = Arrays.asList(firstMovie, secondMovie);
+        when(movieServiceMock.getAll()).thenReturn(movies);
+        when(movieServiceMock.getRandom()).thenReturn(movies);
+    }
 
+    @Test
+    public void testGetAll() throws Exception {
         mockMvc.perform(get("/movie"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -90,7 +93,20 @@ public class MovieControllerTest {
                 .andExpect(jsonPath("$[1].price", is(111.22)))
                 .andExpect(jsonPath("$[1].picturePath", is("http://images.com/2.jpg")));
 
-                verify(movieServiceMock, times(1)).getAll(); // Verify that the getAll() method of the MovieService interface is called only once
-                verifyNoMoreInteractions(movieServiceMock);  // Ensure that no other methods of our mock object are called during the test
+        verify(movieServiceMock, times(1)).getAll(); // Verify that the getAll() method of the MovieService interface is called only once
+        verifyNoMoreInteractions(movieServiceMock);  // Ensure that no other methods of our mock object are called during the test
+    }
+
+    @Test
+    public void testGetRandom() throws Exception {
+        mockMvc.perform(get("/movie/random"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].description").doesNotExist())
+                .andExpect(jsonPath("$[1].description").doesNotExist());
+
+        verify(movieServiceMock, times(1)).getRandom();
+        verifyNoMoreInteractions(movieServiceMock);
     }
 }
