@@ -1,8 +1,8 @@
-<configuration>
+<configuration debug="true">
 
     <property name="DIR" value="../logs"/>
 
-    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
@@ -20,8 +20,8 @@
         </encoder>
     </appender>
 
-    <root level="debug">
-        <appender-ref ref="Console"/>
+    <root level="info">
+        <appender-ref ref="ConsoleAppender"/>
         <appender-ref ref="rollingFileAppender"/>
     </root>
 </configuration>

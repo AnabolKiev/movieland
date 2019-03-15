@@ -5,18 +5,16 @@ import com.anabol.movieland.entity.Movie;
 import com.anabol.movieland.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@PropertySource("classpath:application.yml")
 public class DefaultMovieService implements MovieService {
     private final MovieDao movieDao;
 
-    @Value("${movie.randomLimit:3}")
+    @Value("${movie.randomLimit:1}")
     private int randomLimit;
 
     @Override
