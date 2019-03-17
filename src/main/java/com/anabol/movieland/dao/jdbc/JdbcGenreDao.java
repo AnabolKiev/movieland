@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class JdbcGenre implements GenreDao{
+public class JdbcGenreDao implements GenreDao{
     private static final GenreMapper GENRE_MAPPER = new GenreMapper();
     private static final String GET_ALL_QUERY = "SELECT id, name FROM genre";
 

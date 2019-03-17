@@ -1,2 +1,5 @@
 movie:
   randomLimit: 3
+
+genre:
+  refreshCron: "0 0 */4 * * ?"
