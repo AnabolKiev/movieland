@@ -3,6 +3,7 @@ package com.anabol.movieland.dao.jdbc;
 import com.anabol.movieland.dao.MovieDao;
 import com.anabol.movieland.dao.jdbc.mapper.MovieMapper;
 import com.anabol.movieland.entity.Movie;
+import com.anabol.movieland.web.utils.RequestParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -28,6 +29,11 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
+    public List<Movie> getAll(RequestParameters requestParameters) {
+        return jdbcTemplate.query(addOrder(GET_ALL_QUERY, requestParameters), MOVIE_MAPPER);
+    }
+
+    @Override
     public List<Movie> getRandom(int limit) {
         return jdbcTemplate.query(GET_RANDOM_QUERY, MOVIE_MAPPER, limit);
     }
@@ -35,5 +41,14 @@ public class JdbcMovieDao implements MovieDao {
     @Override
     public List<Movie> getByGenreId(int genreId) {
         return jdbcTemplate.query(GET_BY_GENRE, MOVIE_MAPPER, genreId);
+    }
+
+    @Override
+    public List<Movie> getByGenreId(int genreId, RequestParameters requestParameters) {
+        return jdbcTemplate.query(addOrder(GET_BY_GENRE, requestParameters), MOVIE_MAPPER, genreId);
+    }
+
+    static String addOrder(String basicQuery, RequestParameters requestParameters) {
+        return basicQuery + " ORDER BY " + requestParameters.getAttribute() + " " + requestParameters.getSortDirection();
     }
 }
