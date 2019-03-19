@@ -68,6 +68,7 @@ public class MovieControllerTest {
         List<Movie> movies = Arrays.asList(firstMovie, secondMovie);
         when(movieServiceMock.getAll()).thenReturn(movies);
         when(movieServiceMock.getRandom()).thenReturn(movies);
+        when(movieServiceMock.getByGenreId(1)).thenReturn(movies);
     }
 
     @Test
@@ -107,6 +108,19 @@ public class MovieControllerTest {
                 .andExpect(jsonPath("$[1].description").doesNotExist());
 
         verify(movieServiceMock, times(1)).getRandom();
+        verifyNoMoreInteractions(movieServiceMock);
+    }
+
+    @Test
+    public void testGetByGenre() throws Exception {
+        mockMvc.perform(get("/movie/genre/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].description").doesNotExist())
+                .andExpect(jsonPath("$[1].description").doesNotExist());
+
+        verify(movieServiceMock, times(1)).getByGenreId(1);
         verifyNoMoreInteractions(movieServiceMock);
     }
 }
