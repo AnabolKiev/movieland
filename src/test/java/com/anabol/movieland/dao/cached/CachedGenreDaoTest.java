@@ -13,17 +13,13 @@ public class CachedGenreDaoTest {
     public void testGetAll() throws Exception {
         JdbcGenreDao jdbcGenreDaoMock = mock(JdbcGenreDao.class);
 
-        Genre firstGenre = new Genre();
-        firstGenre.setId(1);
-        firstGenre.setName("драма");
-
-        Genre secondGenre = new Genre();
-        secondGenre.setId(2);
-        secondGenre.setName("криминал");
+        Genre firstGenre = new Genre(1, "драма");
+        Genre secondGenre = new Genre(2, "криминал");
 
         when(jdbcGenreDaoMock.getAll()).thenReturn(Arrays.asList(firstGenre, secondGenre));
 
         CachedGenreDao cachedGenreDao = new CachedGenreDao(jdbcGenreDaoMock);
+        cachedGenreDao.refreshCache();
         cachedGenreDao.getAll();
         cachedGenreDao.getAll();
 
