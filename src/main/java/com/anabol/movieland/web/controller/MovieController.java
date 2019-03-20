@@ -24,7 +24,7 @@ public class MovieController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getAll(@RequestParam(value = "rating", required = false) SortDirection ratingSortDirection,
                               @RequestParam(value = "price", required = false) SortDirection priceSortDirection) {
-        RequestParameters requestParameters = validateRequestParameters(ratingSortDirection, priceSortDirection);
+        RequestParameters requestParameters = createRequestParameters(ratingSortDirection, priceSortDirection);
         if (requestParameters != null) {
             return movieService.getAll(requestParameters);
         }
@@ -42,7 +42,7 @@ public class MovieController {
     public List<Movie> getByGenre(@PathVariable("genreId") int genreId,
                                   @RequestParam(value = "rating", required = false) SortDirection ratingSortDirection,
                                   @RequestParam(value = "price", required = false) SortDirection priceSortDirection) {
-        RequestParameters requestParameters = validateRequestParameters(ratingSortDirection, priceSortDirection);
+        RequestParameters requestParameters = createRequestParameters(ratingSortDirection, priceSortDirection);
         if (requestParameters != null) {
             return movieService.getByGenreId(genreId, requestParameters);
         }
@@ -54,7 +54,7 @@ public class MovieController {
         webdataBinder.registerCustomEditor(SortDirection.class, new SortDirectionConverter());
     }
 
-    RequestParameters validateRequestParameters(SortDirection ratingSortDirection, SortDirection priceSortDirection) {
+    RequestParameters createRequestParameters(SortDirection ratingSortDirection, SortDirection priceSortDirection) {
         if (ratingSortDirection != null) {
             if (ratingSortDirection == SortDirection.DESC) {
                 return new RequestParameters("rating", ratingSortDirection);

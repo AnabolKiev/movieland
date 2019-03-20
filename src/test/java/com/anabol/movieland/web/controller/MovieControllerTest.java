@@ -136,21 +136,21 @@ public class MovieControllerTest {
 
     @Test
     public void testValidateRequestParametersBoth() {
-        RequestParameters requestParameters = movieController.validateRequestParameters(SortDirection.DESC, SortDirection.ASC); // rating=desc&price=asc
+        RequestParameters requestParameters = movieController.createRequestParameters(SortDirection.DESC, SortDirection.ASC); // rating=desc&price=asc
         assertEquals("rating", requestParameters.getAttribute());
         assertEquals(SortDirection.DESC, requestParameters.getSortDirection());
     }
 
     @Test
     public void testValidateRequestParametersPrice() {
-        RequestParameters requestParameters = movieController.validateRequestParameters(null, SortDirection.ASC); // price=asc
+        RequestParameters requestParameters = movieController.createRequestParameters(null, SortDirection.ASC); // price=asc
         assertEquals("price", requestParameters.getAttribute());
         assertEquals(SortDirection.ASC, requestParameters.getSortDirection());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testValidateRequestParametersWrong() {
-        movieController.validateRequestParameters(SortDirection.ASC, null); // rating=asc
+        movieController.createRequestParameters(SortDirection.ASC, null); // rating=asc
     }
 
     @Test

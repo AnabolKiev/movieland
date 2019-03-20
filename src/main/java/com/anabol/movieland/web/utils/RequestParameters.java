@@ -2,12 +2,10 @@ package com.anabol.movieland.web.utils;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Objects;
 
-@Setter
 @Getter
 @ToString
 @RequiredArgsConstructor
@@ -17,9 +15,11 @@ public class RequestParameters {
 
     @Override // for Mockito
     public boolean equals(Object o) {
-        RequestParameters requestParameters = RequestParameters.class.cast(o);
-        return Objects.equals(attribute, requestParameters.attribute) &&
-                sortDirection == requestParameters.sortDirection;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RequestParameters that = (RequestParameters) o;
+        return Objects.equals(attribute, that.attribute) &&
+                sortDirection == that.sortDirection;
     }
 
     @Override

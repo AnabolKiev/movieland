@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.anabol.movieland.dao.jdbc.utils.QueryBuilder.addOrder;
+
 @Repository
 @RequiredArgsConstructor
 public class JdbcMovieDao implements MovieDao {
@@ -48,7 +50,4 @@ public class JdbcMovieDao implements MovieDao {
         return jdbcTemplate.query(addOrder(GET_BY_GENRE, requestParameters), MOVIE_MAPPER, genreId);
     }
 
-    static String addOrder(String basicQuery, RequestParameters requestParameters) {
-        return basicQuery + " ORDER BY " + requestParameters.getAttribute() + " " + requestParameters.getSortDirection();
-    }
 }
