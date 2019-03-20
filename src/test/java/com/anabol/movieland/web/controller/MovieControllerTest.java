@@ -2,8 +2,11 @@ package com.anabol.movieland.web.controller;
 
 import com.anabol.movieland.entity.Movie;
 import com.anabol.movieland.service.MovieService;
+import com.anabol.movieland.web.utils.RequestParameters;
+import com.anabol.movieland.web.utils.SortDirection;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.Request;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:testContext.xml", "file:src/main/webapp/WEB-INF/action-servlet.xml"})
@@ -34,6 +38,8 @@ public class MovieControllerTest {
 
     @Autowired
     private MovieService movieServiceMock;
+    @Autowired
+    private MovieController movieController;
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -65,10 +71,14 @@ public class MovieControllerTest {
         secondMovie.setPrice(111.22);
         secondMovie.setPicturePath("http://images.com/2.jpg");
 
+        RequestParameters requestParameters = new RequestParameters("rating", SortDirection.DESC);
+
         List<Movie> movies = Arrays.asList(firstMovie, secondMovie);
         when(movieServiceMock.getAll()).thenReturn(movies);
+        when(movieServiceMock.getAll(requestParameters)).thenReturn(movies);
         when(movieServiceMock.getRandom()).thenReturn(movies);
         when(movieServiceMock.getByGenreId(1)).thenReturn(movies);
+        when(movieServiceMock.getByGenreId(1, requestParameters)).thenReturn(movies);
     }
 
     @Test
@@ -123,4 +133,44 @@ public class MovieControllerTest {
         verify(movieServiceMock, times(1)).getByGenreId(1);
         verifyNoMoreInteractions(movieServiceMock);
     }
+
+    @Test
+    public void testValidateRequestParametersBoth() {
+        RequestParameters requestParameters = movieController.createRequestParameters(SortDirection.DESC, SortDirection.ASC); // rating=desc&price=asc
+        assertEquals("rating", requestParameters.getAttribute());
+        assertEquals(SortDirection.DESC, requestParameters.getSortDirection());
+    }
+
+    @Test
+    public void testValidateRequestParametersPrice() {
+        RequestParameters requestParameters = movieController.createRequestParameters(null, SortDirection.ASC); // price=asc
+        assertEquals("price", requestParameters.getAttribute());
+        assertEquals(SortDirection.ASC, requestParameters.getSortDirection());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testValidateRequestParametersWrong() {
+        movieController.createRequestParameters(SortDirection.ASC, null); // rating=asc
+    }
+
+    @Test
+    public void testGetAllOrdered() throws Exception {
+        mockMvc.perform(get("/movie?rating=desc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].description").doesNotExist())
+                .andExpect(jsonPath("$[1].description").doesNotExist());
+    }
+
+    @Test
+    public void testGetByGenreOrdered() throws Exception {
+        mockMvc.perform(get("/movie/genre/1?rating=desc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].description").doesNotExist())
+                .andExpect(jsonPath("$[1].description").doesNotExist());
+    }
+
 }
