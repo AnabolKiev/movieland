@@ -46,13 +46,8 @@ public class GenreControllerTest {
 
     @Test
     public void testGetAll() throws Exception {
-        Genre firstGenre = new Genre();
-        firstGenre.setId(1);
-        firstGenre.setName("драма");
-
-        Genre secondGenre = new Genre();
-        secondGenre.setId(2);
-        secondGenre.setName("криминал");
+        Genre firstGenre = new Genre(1, "драма");
+        Genre secondGenre = new Genre(2, "криминал");
 
         when(genreServiceMock.getAll()).thenReturn(Arrays.asList(firstGenre, secondGenre));
 
