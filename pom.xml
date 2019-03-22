@@ -26,7 +26,7 @@
         <jsonpath.version>2.4.0</jsonpath.version>
         <cobertura.version>2.7</cobertura.version>
         <checkstyle.version>3.0.0</checkstyle.version>
-        <findbugs.version>3.0.1</findbugs.version>
+        <spotbugs.version>3.1.11</spotbugs.version>
     </properties>
 
     <build>
@@ -73,6 +73,15 @@
                         </reports>
                     </reportSet>
                 </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs.version}</version>
+                <configuration>
+                    <xmlOutput>true</xmlOutput>
+                    <xmlOutputDirectory>target/site</xmlOutputDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </reporting>
