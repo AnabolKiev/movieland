@@ -6,7 +6,6 @@ import com.anabol.movieland.web.utils.RequestParameters;
 import com.anabol.movieland.web.utils.SortDirection;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.Request;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +29,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:testContext.xml", "file:src/main/webapp/WEB-INF/action-servlet.xml"})
+@ContextConfiguration(locations = {"classpath:testContext.xml", "file:src/main/webapp/WEB-INF/action-servlet.xml", "file:src/main/webapp/WEB-INF/applicationContext.xml"})
 @WebAppConfiguration
 public class MovieControllerTest {
 
     private MockMvc mockMvc;
 
     @Autowired
-    private MovieService movieServiceMock;
+    private MovieService movieService;
     @Autowired
     private MovieController movieController;
     @Autowired
@@ -48,7 +47,7 @@ public class MovieControllerTest {
         //We have to reset our mock between tests because the mock objects
         //are managed by the Spring container. If we would not reset them,
         //stubbing and verified behavior would "leak" from one test to another.
-        Mockito.reset(movieServiceMock);
+        Mockito.reset(movieService);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         Movie firstMovie = new Movie();
@@ -74,11 +73,11 @@ public class MovieControllerTest {
         RequestParameters requestParameters = new RequestParameters("rating", SortDirection.DESC);
 
         List<Movie> movies = Arrays.asList(firstMovie, secondMovie);
-        when(movieServiceMock.getAll()).thenReturn(movies);
-        when(movieServiceMock.getAll(requestParameters)).thenReturn(movies);
-        when(movieServiceMock.getRandom()).thenReturn(movies);
-        when(movieServiceMock.getByGenreId(1)).thenReturn(movies);
-        when(movieServiceMock.getByGenreId(1, requestParameters)).thenReturn(movies);
+        when(movieService.getAll()).thenReturn(movies);
+        when(movieService.getAll(requestParameters)).thenReturn(movies);
+        when(movieService.getRandom()).thenReturn(movies);
+        when(movieService.getByGenreId(1)).thenReturn(movies);
+        when(movieService.getByGenreId(1, requestParameters)).thenReturn(movies);
     }
 
     @Test
@@ -104,8 +103,8 @@ public class MovieControllerTest {
                 .andExpect(jsonPath("$[1].price", is(111.22)))
                 .andExpect(jsonPath("$[1].picturePath", is("http://images.com/2.jpg")));
 
-        verify(movieServiceMock, times(1)).getAll(); // Verify that the getAll() method of the MovieService interface is called only once
-        verifyNoMoreInteractions(movieServiceMock);  // Ensure that no other methods of our mock object are called during the test
+        verify(movieService, times(1)).getAll(); // Verify that the getAll() method of the MovieService interface is called only once
+        verifyNoMoreInteractions(movieService);  // Ensure that no other methods of our mock object are called during the test
     }
 
     @Test
@@ -117,8 +116,8 @@ public class MovieControllerTest {
                 .andExpect(jsonPath("$[0].description").doesNotExist())
                 .andExpect(jsonPath("$[1].description").doesNotExist());
 
-        verify(movieServiceMock, times(1)).getRandom();
-        verifyNoMoreInteractions(movieServiceMock);
+        verify(movieService, times(1)).getRandom();
+        verifyNoMoreInteractions(movieService);
     }
 
     @Test
@@ -130,8 +129,8 @@ public class MovieControllerTest {
                 .andExpect(jsonPath("$[0].description").doesNotExist())
                 .andExpect(jsonPath("$[1].description").doesNotExist());
 
-        verify(movieServiceMock, times(1)).getByGenreId(1);
-        verifyNoMoreInteractions(movieServiceMock);
+        verify(movieService, times(1)).getByGenreId(1);
+        verifyNoMoreInteractions(movieService);
     }
 
     @Test

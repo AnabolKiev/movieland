@@ -7,7 +7,8 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class Genre {
+public class Review {
     private final int id;
-    private final String name;
+    private final User user;
+    private final String text;
 }

@@ -45,4 +45,9 @@ public class CachedGenreDao implements GenreDao {
             lock.readLock().unlock();
         }
     }
+
+    @Override
+    public List<Genre> getByMovieId(int movieId) {
+        return genreDao.getByMovieId(movieId);
+    }
 }

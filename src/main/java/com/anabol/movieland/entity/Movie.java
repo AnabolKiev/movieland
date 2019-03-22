@@ -6,23 +6,28 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Setter
 @Getter
 @ToString
 public class Movie {
-    @JsonView(Views.Public.class)
+    @JsonView(Views.MovieShort.class)
     private int id;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.MovieShort.class)
     private String nameRussian;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.MovieShort.class)
     private String nameNative;
     private String description;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.MovieShort.class)
     private String yearOfRelease;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.MovieShort.class)
     private double rating;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.MovieShort.class)
     private double price;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.MovieShort.class)
     private String picturePath;
+    private List<Country> countries;
+    private List<Genre> genres;
+    private List<Review> reviews;
 }

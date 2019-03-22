@@ -14,11 +14,18 @@ import java.util.List;
 public class JdbcGenreDao implements GenreDao{
     private static final GenreMapper GENRE_MAPPER = new GenreMapper();
     private static final String GET_ALL_QUERY = "SELECT id, name FROM genre";
+    private static final String GET_BY_MOVIE_QUERY = "SELECT id, name from genre g, movieGenre mg " +
+            "WHERE g.id = mg.genreId AND mg.movieId = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Genre> getAll() {
         return jdbcTemplate.query(GET_ALL_QUERY, GENRE_MAPPER);
+    }
+
+    @Override
+    public List<Genre> getByMovieId(int movieId) {
+        return jdbcTemplate.query(GET_BY_MOVIE_QUERY, GENRE_MAPPER, movieId);
     }
 }

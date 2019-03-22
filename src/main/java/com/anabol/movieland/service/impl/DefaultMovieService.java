@@ -2,6 +2,9 @@ package com.anabol.movieland.service.impl;
 
 import com.anabol.movieland.dao.MovieDao;
 import com.anabol.movieland.entity.Movie;
+import com.anabol.movieland.service.CountryService;
+import com.anabol.movieland.service.GenreService;
+import com.anabol.movieland.service.ReviewService;
 import com.anabol.movieland.web.utils.RequestParameters;
 import com.anabol.movieland.service.MovieService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DefaultMovieService implements MovieService {
     private final MovieDao movieDao;
+    private final CountryService countryService;
+    private final GenreService genreService;
+    private final ReviewService reviewService;
 
     @Value("${movie.randomLimit:3}")
     private int randomLimit;
@@ -41,5 +47,14 @@ public class DefaultMovieService implements MovieService {
     @Override
     public List<Movie> getByGenreId(int genreId, RequestParameters requestParameters) {
         return movieDao.getByGenreId(genreId, requestParameters);
+    }
+
+    @Override
+    public Movie getById(int id) {
+        Movie movie = movieDao.getById(id);
+        countryService.enrich(movie);
+        genreService.enrich(movie);
+        reviewService.enrich(movie);
+        return movie;
     }
 }

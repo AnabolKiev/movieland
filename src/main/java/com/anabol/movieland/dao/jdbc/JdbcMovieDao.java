@@ -2,6 +2,7 @@ package com.anabol.movieland.dao.jdbc;
 
 import com.anabol.movieland.dao.MovieDao;
 import com.anabol.movieland.dao.jdbc.mapper.MovieMapper;
+import com.anabol.movieland.dao.jdbc.mapper.MovieMapperFull;
 import com.anabol.movieland.entity.Movie;
 import com.anabol.movieland.web.utils.RequestParameters;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,15 @@ import static com.anabol.movieland.dao.jdbc.utils.QueryBuilder.addOrder;
 @RequiredArgsConstructor
 public class JdbcMovieDao implements MovieDao {
     private static final MovieMapper MOVIE_MAPPER = new MovieMapper();
+    private static final MovieMapperFull MOVIE_MAPPER_FULL = new MovieMapperFull();
     private static final String GET_ALL_QUERY = "SELECT id, nameRussian, nameNative, yearOfRelease, rating, price, " +
             "picturePath FROM movie";
     private static final String GET_RANDOM_QUERY = "SELECT id, nameRussian, nameNative, yearOfRelease, rating, price, " +
             "picturePath FROM movie ORDER BY RAND() LIMIT ?";
     private static final String GET_BY_GENRE = "SELECT id, nameRussian, nameNative, yearOfRelease, rating, price, " +
             "picturePath FROM movie m, movieGenre mg WHERE mg.movieId = m.id AND mg.genreId = ?";
+    private static final String GET_BY_ID_QUERY = "SELECT id, nameRussian, nameNative, yearOfRelease, description, " +
+            "rating, price, picturePath FROM movie WHERE id = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -48,6 +52,11 @@ public class JdbcMovieDao implements MovieDao {
     @Override
     public List<Movie> getByGenreId(int genreId, RequestParameters requestParameters) {
         return jdbcTemplate.query(addOrder(GET_BY_GENRE, requestParameters), MOVIE_MAPPER, genreId);
+    }
+
+    @Override
+    public Movie getById(int id) {
+        return jdbcTemplate.queryForObject(GET_BY_ID_QUERY, MOVIE_MAPPER_FULL, id);
     }
 
 }

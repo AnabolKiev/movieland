@@ -20,7 +20,7 @@ import java.util.List;
 public class MovieController {
     private final MovieService movieService;
 
-    @JsonView(Views.Public.class)
+    @JsonView(Views.MovieShort.class)
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getAll(@RequestParam(value = "rating", required = false) SortDirection ratingSortDirection,
                               @RequestParam(value = "price", required = false) SortDirection priceSortDirection) {
@@ -31,13 +31,13 @@ public class MovieController {
         return movieService.getAll();
     }
 
-    @JsonView(Views.Public.class)
+    @JsonView(Views.MovieShort.class)
     @GetMapping(value = "/random", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getRandom() {
         return movieService.getRandom();
     }
 
-    @JsonView(Views.Public.class)
+    @JsonView(Views.MovieShort.class)
     @GetMapping(value = "/genre/{genreId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getByGenre(@PathVariable("genreId") int genreId,
                                   @RequestParam(value = "rating", required = false) SortDirection ratingSortDirection,
@@ -47,6 +47,11 @@ public class MovieController {
             return movieService.getByGenreId(genreId, requestParameters);
         }
         return movieService.getByGenreId(genreId);
+    }
+
+    @GetMapping(value = "/{movieId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Movie getById(@PathVariable int movieId) {
+        return movieService.getById(movieId);
     }
 
     @InitBinder

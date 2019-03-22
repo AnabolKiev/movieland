@@ -2,6 +2,7 @@ package com.anabol.movieland.service.impl;
 
 import com.anabol.movieland.dao.GenreDao;
 import com.anabol.movieland.entity.Genre;
+import com.anabol.movieland.entity.Movie;
 import com.anabol.movieland.service.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,5 +17,10 @@ public class DefaultGenreService implements GenreService{
     @Override
     public List<Genre> getAll() {
         return genreDao.getAll();
+    }
+
+    @Override
+    public void enrich(Movie movie) {
+        movie.setGenres(genreDao.getByMovieId(movie.getId()));
     }
 }
