@@ -8,11 +8,13 @@ import com.anabol.movieland.service.ReviewService;
 import com.anabol.movieland.web.utils.RequestParameters;
 import com.anabol.movieland.service.MovieService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DefaultMovieService implements MovieService {
@@ -55,6 +57,7 @@ public class DefaultMovieService implements MovieService {
         countryService.enrich(movie);
         genreService.enrich(movie);
         reviewService.enrich(movie);
+        log.info("Movie {} was extracted and enriched", movie);
         return movie;
     }
 }
