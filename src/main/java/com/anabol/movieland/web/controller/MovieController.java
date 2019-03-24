@@ -1,9 +1,7 @@
 package com.anabol.movieland.web.controller;
 
+import com.anabol.movieland.web.utils.*;
 import com.anabol.movieland.entity.Movie;
-import com.anabol.movieland.web.utils.RequestParameters;
-import com.anabol.movieland.web.utils.SortDirection;
-import com.anabol.movieland.web.utils.SortDirectionConverter;
 import com.anabol.movieland.service.MovieService;
 import com.anabol.movieland.web.view.Views;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -50,25 +48,37 @@ public class MovieController {
     }
 
     @GetMapping(value = "/{movieId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Movie getById(@PathVariable int movieId) {
+    public Movie getById(@PathVariable int movieId, @RequestParam(value = "currency", required = false) Currency currency) {
+        if (currency != null) {
+            RequestParameters requestParameters = new RequestParameters();
+            requestParameters.setCurrency(currency);
+            return movieService.getById(movieId, requestParameters);
+        }
         return movieService.getById(movieId);
     }
 
     @InitBinder
     public void initBinder(final WebDataBinder webdataBinder) {
         webdataBinder.registerCustomEditor(SortDirection.class, new SortDirectionConverter());
+        webdataBinder.registerCustomEditor(Currency.class, new CurrencyConverter());
     }
 
     RequestParameters createRequestParameters(SortDirection ratingSortDirection, SortDirection priceSortDirection) {
         if (ratingSortDirection != null) {
             if (ratingSortDirection == SortDirection.DESC) {
-                return new RequestParameters("rating", ratingSortDirection);
+                RequestParameters requestParameters = new RequestParameters();
+                requestParameters.setAttribute("rating");
+                requestParameters.setSortDirection(ratingSortDirection);
+                return requestParameters;
             } else {
                 throw new IllegalArgumentException("This sorting order doesn't supported for the attribute");
             }
         }
         if (priceSortDirection != null) {
-            return new RequestParameters("price", priceSortDirection);
+            RequestParameters requestParameters = new RequestParameters();
+            requestParameters.setAttribute("price");
+            requestParameters.setSortDirection(priceSortDirection);
+            return requestParameters;
         }
         return null;
     }

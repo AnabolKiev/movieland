@@ -70,7 +70,9 @@ public class MovieControllerTest {
         secondMovie.setPrice(111.22);
         secondMovie.setPicturePath("http://images.com/2.jpg");
 
-        RequestParameters requestParameters = new RequestParameters("rating", SortDirection.DESC);
+        RequestParameters requestParameters = new RequestParameters();
+        requestParameters.setAttribute("rating");
+        requestParameters.setSortDirection(SortDirection.DESC);
 
         List<Movie> movies = Arrays.asList(firstMovie, secondMovie);
         when(movieService.getAll()).thenReturn(movies);
