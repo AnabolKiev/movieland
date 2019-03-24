@@ -32,7 +32,6 @@ public class CachedCurrencyDao implements CurrencyDao {
     @PostConstruct
     @Scheduled(cron = "${currency.refreshCron}")
     void refreshCache() {
-
         try {
             HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
             connection.setRequestMethod("GET"); // optional default is GET
