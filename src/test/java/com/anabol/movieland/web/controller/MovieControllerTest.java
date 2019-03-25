@@ -174,4 +174,10 @@ public class MovieControllerTest {
                 .andExpect(jsonPath("$[1].description").doesNotExist());
     }
 
+    @Test
+    public void testGetByIdAndWrongCurrency() throws Exception {
+        mockMvc.perform(get("/movie/1?currency=GBP"))
+                .andExpect(status().isBadRequest());
+    }
+
 }

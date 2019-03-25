@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static org.springframework.http.HttpHeaders.USER_AGENT;
 
@@ -24,7 +25,8 @@ import static org.springframework.http.HttpHeaders.USER_AGENT;
 @RequiredArgsConstructor
 public class CachedCurrencyDao implements CurrencyDao {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private volatile Map<Currency, Double> currencyMap;
+    private Map<Currency, Double> currencyMap;
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     @Value("${currency.url}")
     private String url;
@@ -37,17 +39,22 @@ public class CachedCurrencyDao implements CurrencyDao {
             connection.setRequestMethod("GET"); // optional default is GET
             connection.setRequestProperty("User-Agent", USER_AGENT);
 
-            currencyMap = new HashMap<>();
             ObjectNode[] nodes = OBJECT_MAPPER.readValue(connection.getInputStream(), ObjectNode[].class);
-            for (ObjectNode node : nodes) {
-                if (node.has("cc")) {
-                    String currencyCode = node.get("cc").textValue();
-                    if (Currency.contains(currencyCode) && node.has("rate")) {
-                        double rate = node.get("rate").asDouble();
-                        currencyMap.put(Currency.getByName(currencyCode), rate);
-                        log.info("Currency rate for {} updated with value {}", currencyCode, rate);
+            try {
+                lock.writeLock().lock();
+                currencyMap = new HashMap<>();
+                for (ObjectNode node : nodes) {
+                    if (node.has("cc")) {
+                        String currencyCode = node.get("cc").textValue();
+                        if (Currency.contains(currencyCode) && node.has("rate")) {
+                            double rate = node.get("rate").asDouble();
+                            currencyMap.put(Currency.getByName(currencyCode), rate);
+                            log.info("Currency rate for {} updated with value {}", currencyCode, rate);
+                        }
                     }
                 }
+            } finally {
+                lock.writeLock().unlock();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,11 +64,16 @@ public class CachedCurrencyDao implements CurrencyDao {
 
     @Override
     public double getRate(Currency currency) {
-        double rate = currencyMap.get(currency);
-        if (rate == 0) {
-            throw new RuntimeException("Requested currency rate isn't available at the moment");
+        try {
+            lock.readLock().lock();
+            Double rate = currencyMap.get(currency);
+            if (rate == null) {
+                throw new RuntimeException("Requested currency rate isn't available at the moment");
+            }
+            return rate;
+        } finally {
+            lock.readLock().unlock();
         }
-        return rate;
     }
 
 }

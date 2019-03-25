@@ -62,9 +62,9 @@ public class DefaultMovieService implements MovieService {
     @Override
     public Movie getById(int id, RequestParameters requestParameters) {
         Movie movie = getById(id);
-        double rate = currencyService.getRate(requestParameters.getCurrency());
-        movie.setPrice(Math.round(movie.getPrice()/rate*100)/100);
-        log.info("Price was recalculated with rate {}", rate);
+        double price = currencyService.convert(movie.getPrice(), requestParameters.getCurrency());
+        movie.setPrice(price);
+        log.info("Price was converted to {} for {}", requestParameters.getCurrency().getName(), movie);
         return movie;
     }
 }
