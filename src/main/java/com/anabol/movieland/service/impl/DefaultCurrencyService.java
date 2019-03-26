@@ -12,7 +12,7 @@ public class DefaultCurrencyService implements CurrencyService {
     private final CurrencyDao currencyDao;
 
     @Override
-    public double convert(double amount, Currency currency) {
-      return amount/currencyDao.getRate(currency);
+    public double convert(double amount, Currency currencyFrom, Currency currencyTo) {
+        return amount * currencyDao.getRate(currencyFrom) / currencyDao.getRate(currencyTo);
     }
 }

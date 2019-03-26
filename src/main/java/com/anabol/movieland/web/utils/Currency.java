@@ -4,33 +4,28 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.Arrays;
+
 @Getter
 @ToString
 @RequiredArgsConstructor
 public enum Currency {
+    UAH("UAH"),
     USD("USD"),
     EUR("EUR");
 
     private final String name;
 
     public static Currency getByName(String name) {
-        Currency[] currencies = Currency.values();
-        for (Currency currency : currencies) {
-            if (currency.getName().equalsIgnoreCase(name)) {
-                return currency;
-            }
-        }
-        throw new IllegalArgumentException("No currency found for code " + name);
+        return Arrays.stream(Currency.values())
+                .filter(currency -> currency.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No currency found for code " + name));
     }
 
     public static boolean contains(String name) {
-        Currency[] currencies = Currency.values();
-        for (Currency currency : currencies) {
-            if (currency.getName().equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(Currency.values())
+                .anyMatch(currency -> currency.getName().equalsIgnoreCase(name));
     }
 
 }

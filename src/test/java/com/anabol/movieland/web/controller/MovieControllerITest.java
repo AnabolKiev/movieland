@@ -86,6 +86,7 @@ public class MovieControllerITest {
 
     @Test
     public void testGetByIdAndCurrency() throws Exception {
+        when(currencyDao.getRate(Currency.UAH)).thenReturn(1.00);
         when(currencyDao.getRate(Currency.USD)).thenReturn(27.15);
 
         mockMvc.perform(get("/movie/1?currency=usd"))
@@ -101,7 +102,7 @@ public class MovieControllerITest {
                         "с приговором судьбы и начинает разрабатывать невероятно дерзкий план своего освобождения.")))
                 .andExpect(jsonPath("$.yearOfRelease", is("1994")))
                 .andExpect(jsonPath("$.rating", is(8.89)))
-                .andExpect(jsonPath("$.price", closeTo(4.55, 0.01)))
+                .andExpect(jsonPath("$.price", is(4.55)))
                 .andExpect(jsonPath("$.picturePath", is("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4Mj" +
                         "U4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")))
                 .andExpect(jsonPath("$.countries", hasSize(1)))

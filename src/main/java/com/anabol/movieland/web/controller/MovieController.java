@@ -48,13 +48,10 @@ public class MovieController {
     }
 
     @GetMapping(value = "/{movieId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Movie getById(@PathVariable int movieId, @RequestParam(value = "currency", required = false) Currency currency) {
-        if (currency != null) {
-            RequestParameters requestParameters = new RequestParameters();
-            requestParameters.setCurrency(currency);
-            return movieService.getById(movieId, requestParameters);
-        }
-        return movieService.getById(movieId);
+    public Movie getById(@PathVariable int movieId, @RequestParam(value = "currency", required = false, defaultValue = "UAH") Currency currency) {
+        RequestParameters requestParameters = new RequestParameters();
+        requestParameters.setCurrency(currency);
+        return movieService.getById(movieId, requestParameters);
     }
 
     @InitBinder
