@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class CachedCurrencyDao implements CurrencyDao {
     private static final Currency BASIC_CURRENCY = Currency.UAH;
     private Map<Currency, Double> currencyMap = new HashMap<>();
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     @Value("${currency.url}")

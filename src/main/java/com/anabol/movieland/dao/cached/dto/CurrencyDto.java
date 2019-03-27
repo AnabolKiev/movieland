@@ -12,6 +12,6 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CurrencyDto {
     @JsonProperty("cc")
-    String currencyCode;
-    double rate;
+    private String currencyCode;
+    private double rate;
 }
