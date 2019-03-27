@@ -70,7 +70,9 @@ public class MovieControllerTest {
         secondMovie.setPrice(111.22);
         secondMovie.setPicturePath("http://images.com/2.jpg");
 
-        RequestParameters requestParameters = new RequestParameters("rating", SortDirection.DESC);
+        RequestParameters requestParameters = new RequestParameters();
+        requestParameters.setAttribute("rating");
+        requestParameters.setSortDirection(SortDirection.DESC);
 
         List<Movie> movies = Arrays.asList(firstMovie, secondMovie);
         when(movieService.getAll()).thenReturn(movies);
@@ -170,6 +172,12 @@ public class MovieControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].description").doesNotExist())
                 .andExpect(jsonPath("$[1].description").doesNotExist());
+    }
+
+    @Test
+    public void testGetByIdAndWrongCurrency() throws Exception {
+        mockMvc.perform(get("/movie/1?currency=GBP"))
+                .andExpect(status().isBadRequest());
     }
 
 }

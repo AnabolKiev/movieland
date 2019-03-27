@@ -10,7 +10,9 @@ import static org.junit.Assert.assertEquals;
 public class QueryBuilderTest {
     @Test
     public void testAddOrder() {
-        RequestParameters requestParameters = new RequestParameters("column1", SortDirection.DESC);
+        RequestParameters requestParameters = new RequestParameters();
+        requestParameters.setAttribute("column1");
+        requestParameters.setSortDirection(SortDirection.DESC);
         String query = addOrder("SELECT * FROM table", requestParameters);
         assertEquals("SELECT * FROM table ORDER BY column1 DESC", query);
     }

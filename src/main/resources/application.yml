@@ -4,6 +4,10 @@ movie:
 genre:
   refreshCron: "0 0 */4 * * ?"
 
+currency:
+  url: "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json"
+  refreshCron: "0 0 8 * * ?"
+
 db:
   driver: com.mysql.cj.jdbc.Driver
   url: jdbc:mysql://sql7.freemysqlhosting.net:3306/sql7281012
