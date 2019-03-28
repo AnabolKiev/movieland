@@ -12,10 +12,10 @@ public enum SortDirection {
     private final String name;
 
     public static SortDirection getByName(String name) {
-        SortDirection[] httpMethods = SortDirection.values();
-        for (SortDirection httpMethod : httpMethods) {
-            if (httpMethod.getName().equalsIgnoreCase(name)) {
-                return httpMethod;
+        SortDirection[] sortDirections = SortDirection.values();
+        for (SortDirection sortDirection : sortDirections) {
+            if (sortDirection.getName().equalsIgnoreCase(name)) {
+                return sortDirection;
             }
         }
         throw new IllegalArgumentException("No sort direction found for name " + name);

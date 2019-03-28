@@ -2,11 +2,8 @@ package com.anabol.movieland.service.impl;
 
 import com.anabol.movieland.dao.MovieDao;
 import com.anabol.movieland.entity.Movie;
-import com.anabol.movieland.service.CountryService;
-import com.anabol.movieland.service.GenreService;
-import com.anabol.movieland.service.ReviewService;
+import com.anabol.movieland.service.*;
 import com.anabol.movieland.web.utils.RequestParameters;
-import com.anabol.movieland.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DefaultMovieService implements MovieService {
     private final MovieDao movieDao;
-    private final CountryService countryService;
-    private final GenreService genreService;
-    private final ReviewService reviewService;
+    private final EnrichmentService enrichmentService;
 
     @Value("${movie.randomLimit:3}")
     private int randomLimit;
@@ -52,11 +47,9 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public Movie getById(int id) {
+    public Movie getById(int id, RequestParameters requestParameters) {
         Movie movie = movieDao.getById(id);
-        countryService.enrich(movie);
-        genreService.enrich(movie);
-        reviewService.enrich(movie);
+        enrichmentService.enrich(movie, requestParameters);
         log.info("Movie {} was extracted and enriched", movie);
         return movie;
     }

@@ -1,29 +1,33 @@
 package com.anabol.movieland.web.utils;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-import java.util.Objects;
-
+@Setter
 @Getter
 @ToString
-@RequiredArgsConstructor
 public class RequestParameters {
-    private final String attribute;
-    private final SortDirection sortDirection;
+    private String attribute;
+    private SortDirection sortDirection;
+    private Currency currency;
 
     @Override // for Mockito
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof RequestParameters)) return false;
+
         RequestParameters that = (RequestParameters) o;
-        return Objects.equals(attribute, that.attribute) &&
-                sortDirection == that.sortDirection;
+
+        if (attribute != null ? !attribute.equals(that.attribute) : that.attribute != null) return false;
+        if (sortDirection != that.sortDirection) return false;
+        return currency == that.currency;
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attribute, sortDirection);
+        int result = attribute != null ? attribute.hashCode() : 0;
+        result = 31 * result + (sortDirection != null ? sortDirection.hashCode() : 0);
+        result = 31 * result + (currency != null ? currency.hashCode() : 0);
+        return result;
     }
 }

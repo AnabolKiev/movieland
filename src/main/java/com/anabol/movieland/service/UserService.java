@@ -1,7 +1,7 @@
-package com.anabol.movieland.dao;
+package com.anabol.movieland.service;
 
 import com.anabol.movieland.entity.User;
 
-public interface UserDao {
+public interface UserService {
     User getByEmail(String email);
 }
