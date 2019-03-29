@@ -1,15 +1,16 @@
 package com.anabol.movieland.entity;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 @Setter
 @Getter
 @ToString
-@RequiredArgsConstructor
 public class User {
-    private final int id;
-    private final String nickName;
+    private int id;
+    @JsonIgnore
+    private String email;
+    private String nickName;
+    @JsonIgnore
+    private String password;
 }

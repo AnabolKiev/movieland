@@ -1,11 +1,8 @@
 package com.anabol.movieland.web.controller;
 
-import com.anabol.movieland.entity.Genre;
-import com.anabol.movieland.service.GenreService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,53 +12,53 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Arrays;
-
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:testContext.xml", "file:src/main/webapp/WEB-INF/action-servlet.xml",
+@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/action-servlet.xml",
         "file:src/main/webapp/WEB-INF/applicationContext.xml"})
 @WebAppConfiguration
-public class GenreControllerTest {
-
+public class LoginControllerITest {
     private MockMvc mockMvc;
-
-    @Autowired
-    private GenreService genreService;
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     @Before
     public void setUp() {
-        Mockito.reset(genreService);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
-    public void testGetAll() throws Exception {
-        Genre firstGenre = new Genre(1, "драма");
-        Genre secondGenre = new Genre(2, "криминал");
-
-        when(genreService.getAll()).thenReturn(Arrays.asList(firstGenre, secondGenre));
-
-        mockMvc.perform(get("/genre"))
+    public void testLogin() throws Exception {
+        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content("{\"email\" : \"darlene.edwards15@example.com\",\"password\" : \"bricks\"}"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].name", is("драма")))
-                .andExpect(jsonPath("$[1].id", is(2)))
-                .andExpect(jsonPath("$[1].name", is("криминал")));
+                .andExpect(jsonPath("$.nickname", is("Дарлин Эдвардс")))
+                .andExpect(jsonPath("$.uuid").isNotEmpty());
+    }
 
-        verify(genreService, times(1)).getAll();
-        verifyNoMoreInteractions(genreService);
+    @Test
+    public void testLoginFail() throws Exception {
+        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content("{\"email\" : \"darlene.edwards15@example.com\",\"password\" : \"WRONG_PASSWORD\"}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testLogoutDummy() throws Exception {
+        mockMvc.perform(delete("/logout").header("uuid", "some fake uuid"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testLogoutEmptyUuid() throws Exception {
+        mockMvc.perform(delete("/logout"))
+                .andExpect(status().isBadRequest());
     }
 }
