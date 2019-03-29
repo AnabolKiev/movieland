@@ -8,6 +8,10 @@ currency:
   url: "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json"
   refreshCron: "0 0 8 * * ?"
 
+session:
+  expirationHours: 2
+  cleanMillis: 300000 # 5*60*1000
+
 db:
   driver: com.mysql.cj.jdbc.Driver
   url: jdbc:mysql://sql7.freemysqlhosting.net:3306/sql7281012
