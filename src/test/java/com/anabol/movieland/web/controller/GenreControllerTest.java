@@ -27,20 +27,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:testContext.xml", "file:src/main/webapp/WEB-INF/action-servlet.xml"})
+@ContextConfiguration(locations = {"classpath:testContext.xml", "file:src/main/webapp/WEB-INF/action-servlet.xml",
+        "file:src/main/webapp/WEB-INF/applicationContext.xml"})
 @WebAppConfiguration
 public class GenreControllerTest {
 
     private MockMvc mockMvc;
 
     @Autowired
-    private GenreService genreServiceMock;
+    private GenreService genreService;
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     @Before
     public void setUp() {
-        Mockito.reset(genreServiceMock);
+        Mockito.reset(genreService);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
@@ -49,7 +50,7 @@ public class GenreControllerTest {
         Genre firstGenre = new Genre(1, "драма");
         Genre secondGenre = new Genre(2, "криминал");
 
-        when(genreServiceMock.getAll()).thenReturn(Arrays.asList(firstGenre, secondGenre));
+        when(genreService.getAll()).thenReturn(Arrays.asList(firstGenre, secondGenre));
 
         mockMvc.perform(get("/genre"))
                 .andExpect(status().isOk())
@@ -60,7 +61,7 @@ public class GenreControllerTest {
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].name", is("криминал")));
 
-        verify(genreServiceMock, times(1)).getAll();
-        verifyNoMoreInteractions(genreServiceMock);
+        verify(genreService, times(1)).getAll();
+        verifyNoMoreInteractions(genreService);
     }
 }

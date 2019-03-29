@@ -14,9 +14,7 @@ CREATE TABLE user (
   id INT PRIMARY KEY AUTO_INCREMENT,
   email VARCHAR(30) UNIQUE NOT NULL,
   nickname VARCHAR(30),
-  password VARCHAR(76),
-  salt VARCHAR(76),
-  role VARCHAR(20)
+  password VARCHAR(60)
 );
 
 CREATE TABLE genre (

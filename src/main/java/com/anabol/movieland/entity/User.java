@@ -1,6 +1,6 @@
 package com.anabol.movieland.entity;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Setter
@@ -8,8 +8,9 @@ import lombok.*;
 @ToString
 public class User {
     private int id;
+    @JsonIgnore
     private String email;
-    @JsonValue
     private String nickName;
+    @JsonIgnore
     private String password;
 }

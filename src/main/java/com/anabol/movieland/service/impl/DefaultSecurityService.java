@@ -19,7 +19,7 @@ import java.util.*;
 @Slf4j
 public class DefaultSecurityService implements SecurityService {
     @Value("${session.expirationHours:2}")
-    private static int SESSION_LENGTH_HOURS;
+    private int SESSION_LENGTH_HOURS;
     private final UserService userService;
     private List<Session> sessions = Collections.synchronizedList(new ArrayList<>());
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
