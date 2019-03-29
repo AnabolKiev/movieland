@@ -2,6 +2,8 @@ package com.anabol.movieland.service;
 
 import com.anabol.movieland.entity.User;
 
+import java.util.Optional;
+
 public interface UserService {
-    User getByEmail(String email);
+    Optional<User> getByEmail(String email);
 }

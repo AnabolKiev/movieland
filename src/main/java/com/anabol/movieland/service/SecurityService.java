@@ -2,7 +2,9 @@ package com.anabol.movieland.service;
 
 import com.anabol.movieland.web.auth.Session;
 
+import java.util.Optional;
+
 public interface SecurityService {
-    Session login(String email, String password);
+    Optional<Session> login(String email, String password);
     void removeByToken(String token);
 }

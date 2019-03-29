@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 public class LoginController {
@@ -17,17 +19,15 @@ public class LoginController {
     @PostMapping(value = "login",
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Session login(@RequestBody LoginForm loginForm) {
-        Session session = securityService.login(loginForm.getEmail(), loginForm.getPassword());
-        if (session != null) {
-            return session;
+        Optional<Session> session = securityService.login(loginForm.getEmail(), loginForm.getPassword());
+        if (session.isPresent()) {
+            return session.get();
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong combination of login/password");
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Wrong combination of login/password");
     }
 
     @DeleteMapping(value = "logout")
-    public void logout(@RequestHeader(name = "uuid", required = false) String token) {
-        if (token != null) {
-            securityService.removeByToken(token);
-        }
+    public void logout(@RequestHeader(name = "uuid") String token) {
+        securityService.removeByToken(token);
     }
 }

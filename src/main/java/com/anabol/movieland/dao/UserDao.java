@@ -2,6 +2,8 @@ package com.anabol.movieland.dao;
 
 import com.anabol.movieland.entity.User;
 
+import java.util.Optional;
+
 public interface UserDao {
-    User getByEmail(String email);
+    Optional<User> getByEmail(String email);
 }

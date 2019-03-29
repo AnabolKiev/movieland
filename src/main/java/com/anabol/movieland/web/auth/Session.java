@@ -3,19 +3,19 @@ package com.anabol.movieland.web.auth;
 import com.anabol.movieland.entity.User;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Setter
 @Getter
+@RequiredArgsConstructor
 public class Session {
     @JsonProperty("uuid")
-    private String token;
+    private final String token;
     @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="nickName")
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("nickname")
-    private User user;
+    private final User user;
     @JsonIgnore
-    private LocalDateTime expireDate;
+    private final LocalDateTime expireDate;
 }

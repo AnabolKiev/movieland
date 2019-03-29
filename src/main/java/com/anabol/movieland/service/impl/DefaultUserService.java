@@ -6,13 +6,15 @@ import com.anabol.movieland.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class DefaultUserService implements UserService {
     private final UserDao userDao;
 
     @Override
-    public User getByEmail(String email) {
+    public Optional<User> getByEmail(String email) {
         return userDao.getByEmail(email);
     }
 }

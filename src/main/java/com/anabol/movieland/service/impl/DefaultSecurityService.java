@@ -13,44 +13,47 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultSecurityService implements SecurityService {
-    @Value("${session.expirationHours:2}")
-    private int SESSION_LENGTH_HOURS;
     private final UserService userService;
-    private List<Session> sessions = Collections.synchronizedList(new ArrayList<>());
+    private int sessionLengthHours;
+    private ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Override
-    public Session login(String email, String password) {
-        User user = userService.getByEmail(email);
-        if (user != null) {
+    public Optional<Session> login(String email, String password) {
+        Optional<User> userOptional = userService.getByEmail(email);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
             if (encoder.matches(password, user.getPassword())) {
-                Session session = new Session();
                 String token = UUID.randomUUID().toString();
-                session.setToken(token);
-                session.setUser(user);
-                session.setExpireDate(LocalDateTime.now().plusHours(SESSION_LENGTH_HOURS));
-                sessions.add(session);
+                Session session = new Session(token, user, LocalDateTime.now().plusHours(sessionLengthHours));
+                sessions.put(token, session);
                 log.info("New session created for user {}", user.getNickName());
-                return session;
+                return Optional.of(session);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
     public void removeByToken(String token) {
-        if (sessions.removeIf(session -> session.getToken().equals(token))) {
+        if (sessions.remove(token) != null) {
             log.info("Session with token {} was removed", token);
         }
     }
 
     @Scheduled(fixedDelayString = "${session.cleanMillis:300000}", initialDelayString = "${session.cleanMillis:300000}")
     private void cleanUpSessions() {
-        sessions.removeIf(session -> session.getExpireDate().isBefore(LocalDateTime.now()));
+        sessions.entrySet().removeIf(session -> session.getValue().getExpireDate().isBefore(LocalDateTime.now()));
+    }
+
+    @Value("${session.expirationHours:2}")
+    public void setSessionLengthHours(int sessionLengthHours) {
+        this.sessionLengthHours = sessionLengthHours;
     }
 }

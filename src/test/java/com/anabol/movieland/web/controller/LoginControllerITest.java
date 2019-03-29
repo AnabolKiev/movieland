@@ -47,13 +47,18 @@ public class LoginControllerITest {
     public void testLoginFail() throws Exception {
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content("{\"email\" : \"darlene.edwards15@example.com\",\"password\" : \"WRONG_PASSWORD\"}"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
     @Test
-    public void testDummyLogout() throws Exception {
+    public void testLogoutDummy() throws Exception {
         mockMvc.perform(delete("/logout").header("uuid", "some fake uuid"))
                 .andExpect(status().isOk());
     }
 
+    @Test
+    public void testLogoutEmptyUuid() throws Exception {
+        mockMvc.perform(delete("/logout"))
+                .andExpect(status().isBadRequest());
+    }
 }
