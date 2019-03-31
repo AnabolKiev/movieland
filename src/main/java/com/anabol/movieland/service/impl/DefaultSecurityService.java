@@ -47,6 +47,11 @@ public class DefaultSecurityService implements SecurityService {
         }
     }
 
+    @Override
+    public Optional<Session> getByToken(String token) {
+        return Optional.ofNullable(sessions.get(token));
+    }
+
     @Scheduled(fixedDelayString = "${session.cleanMillis:300000}", initialDelayString = "${session.cleanMillis:300000}")
     private void cleanUpSessions() {
         sessions.entrySet().removeIf(session -> session.getValue().getExpireDate().isBefore(LocalDateTime.now()));

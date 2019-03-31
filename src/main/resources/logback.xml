@@ -1,10 +1,11 @@
 <configuration debug="true">
 
     <property name="DIR" value="../logs"/>
+    <property name="logPattern" value="%d{HH:mm:ss.SSS} [%thread] %X{requestId} %X{user} %-5level %logger{50} - %msg%n"/>
 
     <appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <pattern>${logPattern}</pattern>
         </encoder>
     </appender>
     <appender name="rollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -16,7 +17,7 @@
             <totalSizeCap>20GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <pattern>${logPattern}</pattern>
         </encoder>
     </appender>
 
