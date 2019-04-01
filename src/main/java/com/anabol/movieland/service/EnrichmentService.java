@@ -4,5 +4,5 @@ import com.anabol.movieland.entity.Movie;
 import com.anabol.movieland.web.utils.RequestParameters;
 
 public interface EnrichmentService {
-    void enrich(Movie movie, RequestParameters requestParameters);
+    void enrich(Movie movie);
 }
