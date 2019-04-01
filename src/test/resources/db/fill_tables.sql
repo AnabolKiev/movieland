@@ -1,7 +1,7 @@
 INSERT INTO country(name) VALUES ('США');
 
-INSERT INTO user(email, nickname, password) VALUES ('darlene.edwards15@example.com', 'Дарлин Эдвардс', '$2a$10$GCKhpgrMeb8Av6ukac2XneKBqbXElGVB2GRhdN7wyqcWKt9MWlxkK');
-INSERT INTO user(email, nickname, password) VALUES ('gabriel.jackson91@example.com', 'Габриэль Джексон', '$2a$10$JwKOGNTLwL3rDJN8Vnr1.OoNrbKMR/g1rrNPoR/mxvOoEtrSQoVpu');
+INSERT INTO user(email, nickname, password, role) VALUES ('darlene.edwards15@example.com', 'Дарлин Эдвардс', '$2a$10$GCKhpgrMeb8Av6ukac2XneKBqbXElGVB2GRhdN7wyqcWKt9MWlxkK', 'USER');
+INSERT INTO user(email, nickname, password, role) VALUES ('gabriel.jackson91@example.com', 'Габриэль Джексон', '$2a$10$JwKOGNTLwL3rDJN8Vnr1.OoNrbKMR/g1rrNPoR/mxvOoEtrSQoVpu', 'USER');
 
 INSERT INTO genre(name) VALUES ('драма');
 INSERT INTO genre(name) VALUES ('криминал');

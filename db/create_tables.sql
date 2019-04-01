@@ -9,12 +9,12 @@ DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS genre;
 DROP TABLE IF EXISTS country;
 
-
 CREATE TABLE user (
   id INT PRIMARY KEY AUTO_INCREMENT,
   email VARCHAR(30) UNIQUE NOT NULL,
   nickname VARCHAR(30),
-  password BINARY(60)
+  password BINARY(60),
+  role VARCHAR(20)
 );
 
 CREATE TABLE genre (
