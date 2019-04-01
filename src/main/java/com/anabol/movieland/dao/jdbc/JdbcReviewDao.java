@@ -15,11 +15,17 @@ public class JdbcReviewDao implements ReviewDao {
     private static final ReviewMapper REVIEW_MAPPER = new ReviewMapper();
     private static final String GET_BY_MOVIE_QUERY = "SELECT r.id, userid, nickname, text FROM review r, user u " +
             "WHERE u.id = r.userId AND r.movieId = ?";
+    private static final String INSERT_QUERY = "INSERT INTO review (movieId, userId, text) VALUES (?, ?, ?)";
 
     private final JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Review> getByMovieId(int movieId) {
         return jdbcTemplate.query(GET_BY_MOVIE_QUERY, REVIEW_MAPPER, movieId);
+    }
+
+    @Override
+    public void save(Review review) {
+        jdbcTemplate.update(INSERT_QUERY, review.getMovie().getId(), review.getUser().getId(), review.getText());
     }
 }

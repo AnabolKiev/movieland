@@ -1,7 +1,7 @@
 package com.anabol.movieland.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -12,4 +12,6 @@ public class Review {
     private int id;
     private User user;
     private String text;
+    @JsonIgnore
+    private Movie movie;
 }

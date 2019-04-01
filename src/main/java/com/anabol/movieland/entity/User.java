@@ -13,4 +13,6 @@ public class User {
     private String nickName;
     @JsonIgnore
     private String password;
+    @JsonIgnore
+    private UserRole role;
 }

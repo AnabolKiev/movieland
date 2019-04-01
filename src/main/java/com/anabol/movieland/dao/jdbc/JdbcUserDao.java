@@ -16,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 public class JdbcUserDao implements UserDao {
     private static final UserMapper USER_MAPPER = new UserMapper();
-    private static final String GET_BY_EMAIL_QUERY = "SELECT id, email, nickname, password FROM user WHERE email = ?";
+    private static final String GET_BY_EMAIL_QUERY = "SELECT id, email, nickname, password, role FROM user WHERE email = ?";
     private final JdbcTemplate jdbcTemplate;
 
     @Override
