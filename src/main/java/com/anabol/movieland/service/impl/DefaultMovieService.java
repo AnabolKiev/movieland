@@ -17,6 +17,7 @@ import java.util.List;
 public class DefaultMovieService implements MovieService {
     private final MovieDao movieDao;
     private final EnrichmentService enrichmentService;
+    private final CurrencyService currencyService;
 
     @Value("${movie.randomLimit:3}")
     private int randomLimit;
@@ -47,9 +48,18 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
+    public Movie getById(int id) {
+        Movie movie = movieDao.getById(id);
+        enrichmentService.enrich(movie);
+        log.info("Movie {} was extracted and enriched", movie);
+        return movie;
+    }
+
+    @Override
     public Movie getById(int id, RequestParameters requestParameters) {
         Movie movie = movieDao.getById(id);
-        enrichmentService.enrich(movie, requestParameters);
+        enrichmentService.enrich(movie);
+        currencyService.convert(movie, requestParameters);
         log.info("Movie {} was extracted and enriched", movie);
         return movie;
     }
