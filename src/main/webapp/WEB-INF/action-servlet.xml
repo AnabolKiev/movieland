@@ -12,5 +12,8 @@
 
     <context:component-scan base-package="com.anabol.movieland.web"/>
     <mvc:annotation-driven/>
+    <mvc:interceptors>
+        <bean id="logInterceptor" class="com.anabol.movieland.web.auth.LogInterceptor" />
+    </mvc:interceptors>
 
 </beans>
