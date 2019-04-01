@@ -50,8 +50,7 @@ public class DefaultMovieService implements MovieService {
     @Override
     public Movie getById(int id) {
         Movie movie = movieDao.getById(id);
-        enrichmentService.enrich(movie);
-        log.info("Movie {} was extracted and enriched", movie);
+        log.info("Movie was extracted lazy without enrichment {}", movie);
         return movie;
     }
 
