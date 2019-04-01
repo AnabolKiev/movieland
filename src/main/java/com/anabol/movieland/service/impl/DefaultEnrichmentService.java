@@ -13,14 +13,11 @@ public class DefaultEnrichmentService implements EnrichmentService {
     private final CountryService countryService;
     private final GenreService genreService;
     private final ReviewService reviewService;
-    private final CurrencyService currencyService;
 
     @Override
-    public void enrich(Movie movie, RequestParameters requestParameters) {
+    public void enrich(Movie movie) {
         countryService.enrich(movie);
         genreService.enrich(movie);
         reviewService.enrich(movie);
-        double price = currencyService.convert(movie.getPrice(), Currency.UAH, requestParameters.getCurrency());
-        movie.setPrice(price);
     }
 }
