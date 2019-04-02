@@ -54,6 +54,11 @@ public class MovieController {
         return movieService.getById(movieId, requestParameters);
     }
 
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public void add(@RequestBody Movie movie) {
+        movieService.add(movie);
+    }
+
     @InitBinder
     public void initBinder(final WebDataBinder webdataBinder) {
         webdataBinder.registerCustomEditor(SortDirection.class, new SortDirectionConverter());

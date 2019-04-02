@@ -1,15 +1,16 @@
 package com.anabol.movieland.entity;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Setter
 @Getter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class Country {
-    private final int id;
-    private final String name;
+    private int id;
+    private String name;
+
+    public Country(int id) {
+        this.id = id;
+    }
 }

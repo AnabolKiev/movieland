@@ -7,7 +7,12 @@ import com.anabol.movieland.entity.Movie;
 import com.anabol.movieland.web.utils.RequestParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,8 +31,12 @@ public class JdbcMovieDao implements MovieDao {
             "picturePath FROM movie m, movieGenre mg WHERE mg.movieId = m.id AND mg.genreId = ?";
     private static final String GET_BY_ID_QUERY = "SELECT id, nameRussian, nameNative, yearOfRelease, description, " +
             "rating, price, picturePath FROM movie WHERE id = ?";
+    private static final String INSERT_QUERY = "INSERT INTO movie(nameRussian, nameNative, yearOfRelease, description, " +
+            "rating, price, picturePath) VALUES(:nameRussian, :nameNative, :yearOfRelease, :description, " +
+            ":rating, :price, :picturePath)";
 
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
     public List<Movie> getAll() {
@@ -57,6 +66,21 @@ public class JdbcMovieDao implements MovieDao {
     @Override
     public Movie getById(int id) {
         return jdbcTemplate.queryForObject(GET_BY_ID_QUERY, MOVIE_MAPPER_FULL, id);
+    }
+
+    @Override
+    public int add(Movie movie) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("nameRussian", movie.getNameRussian());
+        parameterSource.addValue("nameNative", movie.getNameNative());
+        parameterSource.addValue("description", movie.getDescription());
+        parameterSource.addValue("yearOfRelease", movie.getYearOfRelease());
+        parameterSource.addValue("rating", movie.getRating());
+        parameterSource.addValue("price", movie.getPrice());
+        parameterSource.addValue("picturePath", movie.getPicturePath());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedParameterJdbcTemplate.update(INSERT_QUERY, parameterSource, keyHolder);
+        return keyHolder.getKey().intValue();
     }
 
 }

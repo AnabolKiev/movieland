@@ -5,4 +5,5 @@ import com.anabol.movieland.web.utils.RequestParameters;
 
 public interface EnrichmentService {
     void enrich(Movie movie);
+    void saveDetails(Movie movie);
 }

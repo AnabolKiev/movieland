@@ -16,6 +16,7 @@ public class JdbcGenreDao implements GenreDao{
     private static final String GET_ALL_QUERY = "SELECT id, name FROM genre";
     private static final String GET_BY_MOVIE_QUERY = "SELECT id, name from genre g, movieGenre mg " +
             "WHERE g.id = mg.genreId AND mg.movieId = ?";
+    private static final String INSERT_QUERY = "INSERT INTO movieGenre(movieId, genreId) VALUES (?, ?)";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -27,5 +28,10 @@ public class JdbcGenreDao implements GenreDao{
     @Override
     public List<Genre> getByMovieId(int movieId) {
         return jdbcTemplate.query(GET_BY_MOVIE_QUERY, GENRE_MAPPER, movieId);
+    }
+
+    @Override
+    public void add(int movieId, int genreId) {
+        jdbcTemplate.update(INSERT_QUERY, movieId, genreId);
     }
 }
