@@ -5,6 +5,7 @@ import com.anabol.movieland.web.utils.Currency;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -35,13 +36,14 @@ public class MovieControllerITest {
 
     @Before
     public void setUp() {
+        Mockito.reset(currencyDao);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        when(currencyDao.getRate(Currency.UAH)).thenReturn(1.00);
+        when(currencyDao.getRate(Currency.USD)).thenReturn(27.15);
     }
 
     @Test
     public void testGetById() throws Exception {
-        when(currencyDao.getRate(Currency.UAH)).thenReturn(1.00);
-
         mockMvc.perform(get("/movie/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -87,9 +89,6 @@ public class MovieControllerITest {
 
     @Test
     public void testGetByIdAndCurrency() throws Exception {
-        when(currencyDao.getRate(Currency.UAH)).thenReturn(1.00);
-        when(currencyDao.getRate(Currency.USD)).thenReturn(27.15);
-
         mockMvc.perform(get("/movie/1?currency=usd"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))

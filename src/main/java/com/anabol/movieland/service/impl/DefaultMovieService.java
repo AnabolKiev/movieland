@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.lang.ref.SoftReference;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
@@ -18,6 +20,8 @@ public class DefaultMovieService implements MovieService {
     private final MovieDao movieDao;
     private final EnrichmentService enrichmentService;
     private final CurrencyService currencyService;
+
+    private ConcurrentHashMap<Integer, SoftReference<Movie>> movieCache = new ConcurrentHashMap<>();
 
     @Value("${movie.randomLimit:3}")
     private int randomLimit;
@@ -49,17 +53,26 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     public Movie getById(int id) {
+        if (movieCache.containsKey(id)) {
+            Movie movie = movieCache.get(id).get();
+            if (movie != null) {
+                log.info("Movie {} was extracted from cache", movie);
+                return movie;
+            }
+        }
+
+        // key doesn't exist in cache or object in cache is null (cleared by GC)
         Movie movie = movieDao.getById(id);
-        log.info("Movie was extracted lazy without enrichment {}", movie);
+        enrichmentService.enrich(movie);
+        movieCache.put(id, new SoftReference<Movie>(movie));
+        log.info("Movie {} was extracted from DB and enriched", movie);
         return movie;
     }
 
     @Override
     public Movie getById(int id, RequestParameters requestParameters) {
-        Movie movie = movieDao.getById(id);
-        enrichmentService.enrich(movie);
+        Movie movie = new Movie(getById(id));
         currencyService.convert(movie, requestParameters);
-        log.info("Movie {} was extracted and enriched", movie);
         return movie;
     }
 }
