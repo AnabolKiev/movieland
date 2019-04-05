@@ -20,6 +20,7 @@ public class DefaultMovieService implements MovieService {
     private final MovieDao movieDao;
     private final EnrichmentService enrichmentService;
     private final CurrencyService currencyService;
+    private final ReviewService reviewService;
 
     private ConcurrentHashMap<Integer, SoftReference<Movie>> movieCache = new ConcurrentHashMap<>();
 
@@ -52,7 +53,14 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public Movie getById(int id) {
+    public Movie getById(int id, RequestParameters requestParameters) {
+        Movie movie = new Movie(getSimpleById(id));
+        reviewService.enrich(movie);
+        currencyService.convert(movie, requestParameters);
+        return movie;
+    }
+
+    private Movie getSimpleById(int id) {
         if (movieCache.containsKey(id)) {
             Movie movie = movieCache.get(id).get();
             if (movie != null) {
@@ -64,15 +72,8 @@ public class DefaultMovieService implements MovieService {
         // key doesn't exist in cache or object in cache is null (cleared by GC)
         Movie movie = movieDao.getById(id);
         enrichmentService.enrich(movie);
-        movieCache.put(id, new SoftReference<Movie>(movie));
+        movieCache.put(id, new SoftReference<>(movie));
         log.info("Movie {} was extracted from DB and enriched", movie);
-        return movie;
-    }
-
-    @Override
-    public Movie getById(int id, RequestParameters requestParameters) {
-        Movie movie = new Movie(getById(id));
-        currencyService.convert(movie, requestParameters);
         return movie;
     }
 }
