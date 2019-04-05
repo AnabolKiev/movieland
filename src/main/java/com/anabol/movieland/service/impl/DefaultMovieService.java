@@ -69,5 +69,15 @@ public class DefaultMovieService implements MovieService {
     public void add(Movie movie) {
         movie.setId(movieDao.add(movie));
         enrichmentService.saveDetails(movie);
+        log.info("Movie {} was created", movie);
+    }
+
+    @Override
+    @Transactional
+    public void update(Movie movie) {
+        movieDao.update(movie);
+        enrichmentService.deleteDetails(movie.getId());
+        enrichmentService.saveDetails(movie);
+        log.info("Movie {} was updated", movie);
     }
 }

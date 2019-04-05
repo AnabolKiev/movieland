@@ -24,5 +24,12 @@ public class DefaultEnrichmentService implements EnrichmentService {
     @Override
     public void saveDetails(Movie movie) {
         movie.getCountries().stream().forEach(country -> countryService.add(movie.getId(), country.getId()));
+        movie.getGenres().stream().forEach(genre -> genreService.add(movie.getId(), genre.getId()));
+    }
+
+    @Override
+    public void deleteDetails(int movieId) {
+        countryService.deleteByMovieId(movieId);
+        genreService.deleteByMovieId(movieId);
     }
 }

@@ -55,4 +55,9 @@ public class CachedGenreDao implements GenreDao {
     public void add(int movieId, int genreId) {
         genreDao.add(movieId, genreId);
     }
+
+    @Override
+    public void deleteByMovieId(int movieId) {
+        genreDao.deleteByMovieId(movieId);
+    }
 }

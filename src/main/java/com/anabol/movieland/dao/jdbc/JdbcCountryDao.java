@@ -17,6 +17,7 @@ public class JdbcCountryDao implements CountryDao {
     private static final String GET_BY_MOVIE_QUERY = "SELECT DISTINCT c.id, c.name FROM movieCountry mc, country c " +
             "WHERE mc.countryId = c.id AND mc.movieId = ?";
     private static final String INSERT_QUERY = "INSERT INTO movieCountry(movieId, countryId) VALUES (?, ?)";
+    private static final String DELETE_BY_MOVIE_QUERY = "DELETE FROM movieCountry WHERE movieId = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -28,5 +29,10 @@ public class JdbcCountryDao implements CountryDao {
     @Override
     public void add(int movieId, int countryId) {
         jdbcTemplate.update(INSERT_QUERY, movieId, countryId);
+    }
+
+    @Override
+    public void deleteByMovieId(int movieId) {
+        jdbcTemplate.update(DELETE_BY_MOVIE_QUERY, movieId);
     }
 }

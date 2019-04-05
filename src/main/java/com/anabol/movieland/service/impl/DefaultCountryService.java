@@ -20,4 +20,9 @@ public class DefaultCountryService implements CountryService {
     public void add(int movieId, int countryId) {
         countryDao.add(movieId, countryId);
     }
+
+    @Override
+    public void deleteByMovieId(int movieId) {
+        countryDao.deleteByMovieId(movieId);
+    }
 }

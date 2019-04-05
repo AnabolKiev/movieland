@@ -22,4 +22,6 @@ public interface MovieService {
 
     void add(Movie movie);
 
+    void update(Movie movie);
+
 }

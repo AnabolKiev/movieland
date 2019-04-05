@@ -17,6 +17,7 @@ public class JdbcGenreDao implements GenreDao{
     private static final String GET_BY_MOVIE_QUERY = "SELECT id, name from genre g, movieGenre mg " +
             "WHERE g.id = mg.genreId AND mg.movieId = ?";
     private static final String INSERT_QUERY = "INSERT INTO movieGenre(movieId, genreId) VALUES (?, ?)";
+    private static final String DELETE_BY_MOVIE_QUERY = "DELETE FROM movieGenre WHERE movieId = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -33,5 +34,10 @@ public class JdbcGenreDao implements GenreDao{
     @Override
     public void add(int movieId, int genreId) {
         jdbcTemplate.update(INSERT_QUERY, movieId, genreId);
+    }
+
+    @Override
+    public void deleteByMovieId(int movieId) {
+        jdbcTemplate.update(DELETE_BY_MOVIE_QUERY, movieId);
     }
 }

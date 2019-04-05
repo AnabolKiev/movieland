@@ -29,6 +29,11 @@ public class MovieController {
         return movieService.getAll();
     }
 
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public void add(@RequestBody Movie movie) {
+        movieService.add(movie);
+    }
+
     @JsonView(Views.MovieShort.class)
     @GetMapping(value = "/random", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getRandom() {
@@ -54,9 +59,10 @@ public class MovieController {
         return movieService.getById(movieId, requestParameters);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public void add(@RequestBody Movie movie) {
-        movieService.add(movie);
+    @PutMapping(value = "/{movieId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public void update(@PathVariable int movieId, @RequestBody Movie movie) {
+        movie.setId(movieId);
+        movieService.update(movie);
     }
 
     @InitBinder

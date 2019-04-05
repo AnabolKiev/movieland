@@ -34,6 +34,9 @@ public class JdbcMovieDao implements MovieDao {
     private static final String INSERT_QUERY = "INSERT INTO movie(nameRussian, nameNative, yearOfRelease, description, " +
             "rating, price, picturePath) VALUES(:nameRussian, :nameNative, :yearOfRelease, :description, " +
             ":rating, :price, :picturePath)";
+    private static final String UPDATE_QUERY = "UPDATE movie SET nameRussian = :nameRussina, nameNative = :nameNative, " +
+            "yearOfRelease = :yearOfRelease, description = :description, price = :price, picturePath = :picturePath " +
+            "WHERE id = :id";
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -83,4 +86,16 @@ public class JdbcMovieDao implements MovieDao {
         return keyHolder.getKey().intValue();
     }
 
+    @Override
+    public void update(Movie movie) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("id", movie.getId());
+        parameterSource.addValue("nameRussian", movie.getNameRussian());
+        parameterSource.addValue("nameNative", movie.getNameNative());
+        parameterSource.addValue("description", movie.getDescription());
+        parameterSource.addValue("yearOfRelease", movie.getYearOfRelease());
+        parameterSource.addValue("price", movie.getPrice());
+        parameterSource.addValue("picturePath", movie.getPicturePath());
+        namedParameterJdbcTemplate.update(UPDATE_QUERY, parameterSource);
+    }
 }
