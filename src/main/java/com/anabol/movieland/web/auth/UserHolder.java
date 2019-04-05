@@ -12,4 +12,8 @@ public class UserHolder {
     public static User getCurrentUser() {
         return threadLocal.get();
     }
+
+    public static void clean() {
+        threadLocal.remove();
+    }
 }
