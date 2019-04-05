@@ -1,7 +1,8 @@
 package com.anabol.movieland.web.controller;
 
+import com.anabol.movieland.entity.Movie;
 import com.anabol.movieland.entity.Review;
-import com.anabol.movieland.service.MovieService;
+import com.anabol.movieland.entity.UserRole;
 import com.anabol.movieland.service.ReviewService;
 import com.anabol.movieland.web.auth.UserHolder;
 import com.anabol.movieland.web.auth.annotation.Secured;
@@ -15,13 +16,14 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final MovieService movieService;
 
     @PostMapping(value = "/review", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @Secured
+    @Secured(UserRole.USER)
     public void addReview(@RequestBody ReviewDto reviewDto) {
         Review review = new Review();
-        review.setMovie(movieService.getById(reviewDto.getMovieId()));
+        Movie movie = new Movie();
+        movie.setId(reviewDto.getMovieId());
+        review.setMovie(movie);
         review.setText(reviewDto.getText());
         review.setUser(UserHolder.getCurrentUser());
 
