@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.ref.SoftReference;
 import java.util.List;
@@ -75,5 +76,22 @@ public class DefaultMovieService implements MovieService {
         movieCache.put(id, new SoftReference<>(movie));
         log.info("Movie {} was extracted from DB and enriched", movie);
         return movie;
+    }
+
+    @Override
+    @Transactional
+    public void add(Movie movie) {
+        movie.setId(movieDao.add(movie));
+        enrichmentService.saveDetails(movie);
+        log.info("Movie {} was created", movie);
+    }
+
+    @Override
+    @Transactional
+    public void update(Movie movie) {
+        movieDao.update(movie);
+        enrichmentService.deleteDetails(movie.getId());
+        enrichmentService.saveDetails(movie);
+        log.info("Movie {} was updated", movie);
     }
 }

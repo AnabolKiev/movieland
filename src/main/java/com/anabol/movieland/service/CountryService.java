@@ -4,4 +4,6 @@ import com.anabol.movieland.entity.Movie;
 
 public interface CountryService {
     void enrich(Movie movie);
+    void add(int movieId, int countryId);
+    void deleteByMovieId(int movieId);
 }

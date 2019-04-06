@@ -1,6 +1,9 @@
 package com.anabol.movieland.web.controller;
 
 import com.anabol.movieland.dao.CurrencyDao;
+import com.anabol.movieland.entity.User;
+import com.anabol.movieland.service.SecurityService;
+import com.anabol.movieland.web.auth.Session;
 import com.anabol.movieland.web.utils.Currency;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,17 +18,24 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:testCurrencyContext.xml", "file:src/main/webapp/WEB-INF/action-servlet.xml",
-        "file:src/main/webapp/WEB-INF/applicationContext.xml"})
+        "file:src/main/webapp/WEB-INF/applicationContext.xml", "classpath:testSecurityContext.xml"})
 @WebAppConfiguration
 public class MovieControllerITest {
     private MockMvc mockMvc;
@@ -33,6 +43,8 @@ public class MovieControllerITest {
     private WebApplicationContext webApplicationContext;
     @Autowired
     private CurrencyDao currencyDao;
+    @Autowired
+    private SecurityService securityService;
 
     @Before
     public void setUp() {
@@ -130,5 +142,43 @@ public class MovieControllerITest {
                         "от большинства зрителей вкупе с раздутыми восторженными откликами кинокритиков. Фильм " +
                         "атмосферный. Он драматичный. И, конечно, заслуживает того, чтобы находиться довольно " +
                         "высоко в мировом кинематографе.")));
+    }
+
+    @Test
+    public void testAdd() throws Exception {
+        when(currencyDao.getRate(Currency.UAH)).thenReturn(1.00);
+        User user = new User();
+        user.setId(1);
+        Session session = new Session("12345", user, LocalDateTime.now());
+        when(securityService.getByToken("12345")).thenReturn(Optional.of(session));
+        when(securityService.validateByTokenAndRole(anyString(), anyList())).thenReturn(Optional.of(user));
+
+        mockMvc.perform(post("/movie/")
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content("{\"nameRussian\": \"Побег из Шоушенка-2\", \"nameNative\": \"The Shawshank Redemption-2\"," +
+                        "\"yearOfRelease\": \"2024\", \"description\": \"Description\", \"price\": 123.45,\n" +
+                        "\"picturePath\": \"https://images.com/123.jpg\", \"countries\": [1], \"genres\": [1,2]}")
+                .header("uuid", "12345"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/movie/2"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id", is(2)))
+                .andExpect(jsonPath("$.nameRussian", is("Побег из Шоушенка-2")))
+                .andExpect(jsonPath("$.nameNative", is("The Shawshank Redemption-2")))
+                .andExpect(jsonPath("$.description", is("Description")))
+                .andExpect(jsonPath("$.yearOfRelease", is("2024")))
+                .andExpect(jsonPath("$.rating", is(0.0)))
+                .andExpect(jsonPath("$.price", is(123.45)))
+                .andExpect(jsonPath("$.picturePath", is("https://images.com/123.jpg")))
+                .andExpect(jsonPath("$.countries", hasSize(1)))
+                .andExpect(jsonPath("$.countries[0].id", is(1)))
+                .andExpect(jsonPath("$.countries[0].name", is("США")))
+                .andExpect(jsonPath("$.genres", hasSize(2)))
+                .andExpect(jsonPath("$.genres[0].id", is(1)))
+                .andExpect(jsonPath("$.genres[0].name", is("драма")))
+                .andExpect(jsonPath("$.genres[1].id", is(2)))
+                .andExpect(jsonPath("$.genres[1].name", is("криминал")));
     }
 }

@@ -18,4 +18,8 @@ public interface MovieService {
 
     Movie getById(int id, RequestParameters requestParameters);
 
+    void add(Movie movie);
+
+    void update(Movie movie);
+
 }

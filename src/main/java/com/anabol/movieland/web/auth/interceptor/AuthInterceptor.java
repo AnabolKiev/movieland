@@ -1,8 +1,8 @@
 package com.anabol.movieland.web.auth.interceptor;
 
+import com.anabol.movieland.entity.User;
 import com.anabol.movieland.entity.UserRole;
 import com.anabol.movieland.service.SecurityService;
-import com.anabol.movieland.web.auth.Session;
 import com.anabol.movieland.web.auth.UserHolder;
 import com.anabol.movieland.web.auth.annotation.Secured;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,13 +32,11 @@ public class AuthInterceptor implements HandlerInterceptor {
             HandlerMethod handlerMethod = HandlerMethod.class.cast(handler);
 
             if (handlerMethod.hasMethodAnnotation(Secured.class)) {
-                UserRole expectedRole = handlerMethod.getMethodAnnotation(Secured.class).value();
-                if (request.getHeader("uuid") != null) {
-                    Optional<Session> sessionOptional = securityService.getByToken(request.getHeader("uuid"));
-                    if (sessionOptional.isPresent() && sessionOptional.get().getUser().getRole() == expectedRole) {
-                        UserHolder.setCurrentUser(sessionOptional.get().getUser());
-                        isAuthorized = true;
-                    }
+                List<UserRole> expectedRoles = Arrays.asList(handlerMethod.getMethodAnnotation(Secured.class).value());
+                Optional<User> userOptional = securityService.validateByTokenAndRole(request.getHeader("uuid"), expectedRoles);
+                if (userOptional.isPresent()) {
+                    UserHolder.setCurrentUser(userOptional.get());
+                    isAuthorized = true;
                 }
             } else {
                 isAuthorized = true;

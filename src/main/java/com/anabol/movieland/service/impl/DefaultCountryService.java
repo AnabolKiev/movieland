@@ -15,4 +15,14 @@ public class DefaultCountryService implements CountryService {
     public void enrich(Movie movie) {
         movie.setCountries(countryDao.getByMovieId(movie.getId()));
     }
+
+    @Override
+    public void add(int movieId, int countryId) {
+        countryDao.add(movieId, countryId);
+    }
+
+    @Override
+    public void deleteByMovieId(int movieId) {
+        countryDao.deleteByMovieId(movieId);
+    }
 }

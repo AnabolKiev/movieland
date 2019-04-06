@@ -23,4 +23,14 @@ public class DefaultGenreService implements GenreService{
     public void enrich(Movie movie) {
         movie.setGenres(genreDao.getByMovieId(movie.getId()));
     }
+
+    @Override
+    public void add(int movieId, int genreId) {
+        genreDao.add(movieId, genreId);
+    }
+
+    @Override
+    public void deleteByMovieId(int movieId) {
+        genreDao.deleteByMovieId(movieId);
+    }
 }
