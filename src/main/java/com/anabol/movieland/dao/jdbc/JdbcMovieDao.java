@@ -74,12 +74,7 @@ public class JdbcMovieDao implements MovieDao {
     @Override
     public int add(Movie movie) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue("nameRussian", movie.getNameRussian());
-        parameterSource.addValue("nameNative", movie.getNameNative());
-        parameterSource.addValue("description", movie.getDescription());
-        parameterSource.addValue("yearOfRelease", movie.getYearOfRelease());
-        parameterSource.addValue("price", movie.getPrice());
-        parameterSource.addValue("picturePath", movie.getPicturePath());
+        addParameters(movie, parameterSource);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(INSERT_QUERY, parameterSource, keyHolder);
         return keyHolder.getKey().intValue();
@@ -89,12 +84,16 @@ public class JdbcMovieDao implements MovieDao {
     public void update(Movie movie) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("id", movie.getId());
+        addParameters(movie, parameterSource);
+        namedParameterJdbcTemplate.update(UPDATE_QUERY, parameterSource);
+    }
+
+    private void addParameters(Movie movie, MapSqlParameterSource parameterSource) {
         parameterSource.addValue("nameRussian", movie.getNameRussian());
         parameterSource.addValue("nameNative", movie.getNameNative());
         parameterSource.addValue("description", movie.getDescription());
         parameterSource.addValue("yearOfRelease", movie.getYearOfRelease());
         parameterSource.addValue("price", movie.getPrice());
         parameterSource.addValue("picturePath", movie.getPicturePath());
-        namedParameterJdbcTemplate.update(UPDATE_QUERY, parameterSource);
     }
 }
