@@ -1,5 +1,7 @@
 package com.anabol.movieland.web.controller;
 
+import com.anabol.movieland.entity.UserRole;
+import com.anabol.movieland.web.auth.annotation.Secured;
 import com.anabol.movieland.web.utils.*;
 import com.anabol.movieland.entity.Movie;
 import com.anabol.movieland.service.MovieService;
@@ -30,6 +32,7 @@ public class MovieController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @Secured(UserRole.ADMIN)
     public void add(@RequestBody Movie movie) {
         movieService.add(movie);
     }
@@ -60,6 +63,7 @@ public class MovieController {
     }
 
     @PutMapping(value = "/{movieId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @Secured(UserRole.ADMIN)
     public void update(@PathVariable int movieId, @RequestBody Movie movie) {
         movie.setId(movieId);
         movieService.update(movie);

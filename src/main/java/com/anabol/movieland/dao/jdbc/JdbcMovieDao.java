@@ -32,11 +32,11 @@ public class JdbcMovieDao implements MovieDao {
     private static final String GET_BY_ID_QUERY = "SELECT id, nameRussian, nameNative, yearOfRelease, description, " +
             "rating, price, picturePath FROM movie WHERE id = ?";
     private static final String INSERT_QUERY = "INSERT INTO movie(nameRussian, nameNative, yearOfRelease, description, " +
-            "rating, price, picturePath) VALUES(:nameRussian, :nameNative, :yearOfRelease, :description, " +
-            ":rating, :price, :picturePath)";
-    private static final String UPDATE_QUERY = "UPDATE movie SET nameRussian = :nameRussina, nameNative = :nameNative, " +
-            "yearOfRelease = :yearOfRelease, description = :description, price = :price, picturePath = :picturePath " +
-            "WHERE id = :id";
+            "price, picturePath) VALUES(:nameRussian, :nameNative, :yearOfRelease, :description, :price, :picturePath)";
+    private static final String UPDATE_QUERY = "UPDATE movie SET nameRussian = IFNULL(:nameRussian, nameRussian), " +
+            "nameNative = IFNULL(:nameNative, nameNative), yearOfRelease = IFNULL(:yearOfRelease, yearOfRelease), " +
+            "description = IFNULL(:description, description), price = IF(:price = 0, price, :price), " +
+            "picturePath = IFNULL(:picturePath, picturePath) WHERE id = :id";
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -78,7 +78,6 @@ public class JdbcMovieDao implements MovieDao {
         parameterSource.addValue("nameNative", movie.getNameNative());
         parameterSource.addValue("description", movie.getDescription());
         parameterSource.addValue("yearOfRelease", movie.getYearOfRelease());
-        parameterSource.addValue("rating", movie.getRating());
         parameterSource.addValue("price", movie.getPrice());
         parameterSource.addValue("picturePath", movie.getPicturePath());
         KeyHolder keyHolder = new GeneratedKeyHolder();
