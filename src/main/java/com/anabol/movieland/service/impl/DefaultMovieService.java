@@ -6,6 +6,7 @@ import com.anabol.movieland.service.*;
 import com.anabol.movieland.web.utils.RequestParameters;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ public class DefaultMovieService implements MovieService {
     private final EnrichmentService enrichmentService;
     private final CurrencyService currencyService;
     private final ReviewService reviewService;
+    private final ModelMapper modelMapper;
 
     private ConcurrentHashMap<Integer, SoftReference<Movie>> movieCache = new ConcurrentHashMap<>();
 
@@ -55,26 +57,10 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     public Movie getById(int id, RequestParameters requestParameters) {
-        Movie movie = new Movie(getSimpleById(id));
+        Movie movie = new Movie();
+        modelMapper.map(getSimpleById(id), movie);
         reviewService.enrich(movie);
         currencyService.convert(movie, requestParameters);
-        return movie;
-    }
-
-    private Movie getSimpleById(int id) {
-        if (movieCache.containsKey(id)) {
-            Movie movie = movieCache.get(id).get();
-            if (movie != null) {
-                log.info("Movie {} was extracted from cache", movie);
-                return movie;
-            }
-        }
-
-        // key doesn't exist in cache or object in cache is null (cleared by GC)
-        Movie movie = movieDao.getById(id);
-        enrichmentService.enrich(movie);
-        movieCache.put(id, new SoftReference<>(movie));
-        log.info("Movie {} was extracted from DB and enriched", movie);
         return movie;
     }
 
@@ -93,5 +79,26 @@ public class DefaultMovieService implements MovieService {
         enrichmentService.deleteDetails(movie.getId());
         enrichmentService.saveDetails(movie);
         log.info("Movie {} was updated", movie);
+        movieCache.remove(movie.getId()); // invalidate cache
+    }
+
+    private Movie getSimpleById(int id) {
+        movieCache.computeIfPresent(id, (key, value) -> {
+            if (value.get() != null) { // object in cache is null (cleared by GC)
+                return value;
+            }
+            return getByIdFromDao(key);
+        });
+
+        // key doesn't exist in cache
+        movieCache.computeIfAbsent(id, key -> getByIdFromDao(key));
+        return movieCache.get(id).get();
+    }
+
+    private SoftReference<Movie> getByIdFromDao(int id) {
+        Movie movie = movieDao.getById(id);
+        enrichmentService.enrich(movie);
+        log.info("Movie {} was extracted from DB and enriched", movie);
+        return new SoftReference<>(movie);
     }
 }

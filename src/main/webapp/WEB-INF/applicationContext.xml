@@ -40,5 +40,6 @@
         <constructor-arg ref="dataSource"/>
     </bean>
     <bean id="restTemplate" class="org.springframework.web.client.RestTemplate"/>
+    <bean id="modelMapper" class="org.modelmapper.ModelMapper"/>
 
 </beans>
