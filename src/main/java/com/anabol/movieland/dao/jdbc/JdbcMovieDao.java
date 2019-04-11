@@ -33,10 +33,9 @@ public class JdbcMovieDao implements MovieDao {
             "rating, price, picturePath FROM movie WHERE id = ?";
     private static final String INSERT_QUERY = "INSERT INTO movie(nameRussian, nameNative, yearOfRelease, description, " +
             "price, picturePath) VALUES(:nameRussian, :nameNative, :yearOfRelease, :description, :price, :picturePath)";
-    private static final String UPDATE_QUERY = "UPDATE movie SET nameRussian = IFNULL(:nameRussian, nameRussian), " +
-            "nameNative = IFNULL(:nameNative, nameNative), yearOfRelease = IFNULL(:yearOfRelease, yearOfRelease), " +
-            "description = IFNULL(:description, description), price = IF(:price = 0, price, :price), " +
-            "picturePath = IFNULL(:picturePath, picturePath) WHERE id = :id";
+    private static final String UPDATE_QUERY = "UPDATE movie SET nameRussian = :nameRussian, nameNative = :nameNative, " +
+            "yearOfRelease = :yearOfRelease, description = :description, price = :price, picturePath = :picturePath " +
+            "WHERE id = :id";
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -72,12 +71,13 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public int add(Movie movie) {
+    public Movie add(Movie movie) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         addParameters(movie, parameterSource);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(INSERT_QUERY, parameterSource, keyHolder);
-        return keyHolder.getKey().intValue();
+        movie.setId(keyHolder.getKey().intValue());
+        return movie;
     }
 
     @Override

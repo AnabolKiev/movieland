@@ -25,8 +25,8 @@ public class DefaultGenreService implements GenreService{
     }
 
     @Override
-    public void add(int movieId, int genreId) {
-        genreDao.add(movieId, genreId);
+    public void add(int movieId, List<Genre> genres) {
+        genreDao.add(movieId, genres);
     }
 
     @Override

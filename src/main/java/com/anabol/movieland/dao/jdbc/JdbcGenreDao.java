@@ -4,9 +4,12 @@ import com.anabol.movieland.dao.GenreDao;
 import com.anabol.movieland.dao.jdbc.mapper.GenreMapper;
 import com.anabol.movieland.entity.Genre;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -32,8 +35,19 @@ public class JdbcGenreDao implements GenreDao{
     }
 
     @Override
-    public void add(int movieId, int genreId) {
-        jdbcTemplate.update(INSERT_QUERY, movieId, genreId);
+    public void add(int movieId, List<Genre> genres) {
+        jdbcTemplate.batchUpdate(INSERT_QUERY, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setInt(1, movieId);
+                ps.setInt(2, genres.get(i).getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return genres.size();
+            }
+        });
     }
 
     @Override

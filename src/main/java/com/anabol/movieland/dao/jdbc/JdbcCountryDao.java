@@ -4,10 +4,13 @@ import com.anabol.movieland.dao.CountryDao;
 import com.anabol.movieland.dao.jdbc.mapper.CountryMapper;
 import com.anabol.movieland.entity.Country;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -27,8 +30,20 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public void add(int movieId, int countryId) {
-        jdbcTemplate.update(INSERT_QUERY, movieId, countryId);
+    public void add(int movieId, List<Country> countries) {
+        jdbcTemplate.batchUpdate(INSERT_QUERY,
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        ps.setInt(1, movieId);
+                        ps.setInt(2, countries.get(i).getId());
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return countries.size();
+                    }
+                });
     }
 
     @Override

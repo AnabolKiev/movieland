@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultMovieService implements MovieService {
     private final MovieDao movieDao;
     private final EnrichmentService enrichmentService;
+    private final MovieUpdateDetailsService movieUpdateDetailsService;
     private final CurrencyService currencyService;
     private final ReviewService reviewService;
     private final ModelMapper modelMapper;
@@ -67,38 +68,32 @@ public class DefaultMovieService implements MovieService {
     @Override
     @Transactional
     public void add(Movie movie) {
-        movie.setId(movieDao.add(movie));
-        enrichmentService.saveDetails(movie);
-        log.info("Movie {} was created", movie);
+        Movie insertedMovie = movieDao.add(movie);
+        movieUpdateDetailsService.saveMovieDetails(insertedMovie);
+        log.info("Movie was created {}", insertedMovie);
     }
 
     @Override
     @Transactional
     public void update(Movie movie) {
         movieDao.update(movie);
-        enrichmentService.deleteDetails(movie.getId());
-        enrichmentService.saveDetails(movie);
-        log.info("Movie {} was updated", movie);
+        movieUpdateDetailsService.deleteMovieDetails(movie.getId());
+        movieUpdateDetailsService.saveMovieDetails(movie);
+        log.info("Movie was updated {}", movie);
         movieCache.remove(movie.getId()); // invalidate cache
     }
 
     private Movie getSimpleById(int id) {
-        movieCache.computeIfPresent(id, (key, value) -> {
-            if (value.get() != null) { // object in cache is null (cleared by GC)
-                return value;
+        SoftReference<Movie> movieSoftReference = movieCache.compute(id, (key, value) -> {
+            if (value == null || value.get() == null) { // key doesn't exist in cache or object in cache is null (cleared by GC)
+                Movie movie = movieDao.getById(key);
+                enrichmentService.enrich(movie);
+                log.info("Movie was extracted from DB and enriched {}", movie);
+                return new SoftReference<>(movie);
             }
-            return getByIdFromDao(key);
+            log.info("Movie was extracted from cache {}", value.get());
+            return value;
         });
-
-        // key doesn't exist in cache
-        movieCache.computeIfAbsent(id, key -> getByIdFromDao(key));
-        return movieCache.get(id).get();
-    }
-
-    private SoftReference<Movie> getByIdFromDao(int id) {
-        Movie movie = movieDao.getById(id);
-        enrichmentService.enrich(movie);
-        log.info("Movie {} was extracted from DB and enriched", movie);
-        return new SoftReference<>(movie);
+        return movieSoftReference.get();
     }
 }
