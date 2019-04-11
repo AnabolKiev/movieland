@@ -18,7 +18,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping(value = "/review", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @Secured(UserRole.USER)
+    @Secured({UserRole.USER, UserRole.ADMIN})
     public void addReview(@RequestBody ReviewDto reviewDto) {
         Review review = new Review();
         Movie movie = new Movie();

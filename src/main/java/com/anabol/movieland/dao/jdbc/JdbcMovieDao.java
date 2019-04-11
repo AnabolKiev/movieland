@@ -7,7 +7,12 @@ import com.anabol.movieland.entity.Movie;
 import com.anabol.movieland.web.utils.RequestParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,8 +31,15 @@ public class JdbcMovieDao implements MovieDao {
             "picturePath FROM movie m, movieGenre mg WHERE mg.movieId = m.id AND mg.genreId = ?";
     private static final String GET_BY_ID_QUERY = "SELECT id, nameRussian, nameNative, yearOfRelease, description, " +
             "rating, price, picturePath FROM movie WHERE id = ?";
+    private static final String INSERT_QUERY = "INSERT INTO movie(nameRussian, nameNative, yearOfRelease, description, " +
+            "price, picturePath) VALUES(:nameRussian, :nameNative, :yearOfRelease, :description, :price, :picturePath)";
+    private static final String UPDATE_QUERY = "UPDATE movie SET nameRussian = IFNULL(:nameRussian, nameRussian), " +
+            "nameNative = IFNULL(:nameNative, nameNative), yearOfRelease = IFNULL(:yearOfRelease, yearOfRelease), " +
+            "description = IFNULL(:description, description), price = IF(:price = 0, price, :price), " +
+            "picturePath = IFNULL(:picturePath, picturePath) WHERE id = :id";
 
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
     public List<Movie> getAll() {
@@ -59,4 +71,29 @@ public class JdbcMovieDao implements MovieDao {
         return jdbcTemplate.queryForObject(GET_BY_ID_QUERY, MOVIE_MAPPER_FULL, id);
     }
 
+    @Override
+    public int add(Movie movie) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        addParameters(movie, parameterSource);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedParameterJdbcTemplate.update(INSERT_QUERY, parameterSource, keyHolder);
+        return keyHolder.getKey().intValue();
+    }
+
+    @Override
+    public void update(Movie movie) {
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("id", movie.getId());
+        addParameters(movie, parameterSource);
+        namedParameterJdbcTemplate.update(UPDATE_QUERY, parameterSource);
+    }
+
+    private void addParameters(Movie movie, MapSqlParameterSource parameterSource) {
+        parameterSource.addValue("nameRussian", movie.getNameRussian());
+        parameterSource.addValue("nameNative", movie.getNameNative());
+        parameterSource.addValue("description", movie.getDescription());
+        parameterSource.addValue("yearOfRelease", movie.getYearOfRelease());
+        parameterSource.addValue("price", movie.getPrice());
+        parameterSource.addValue("picturePath", movie.getPicturePath());
+    }
 }

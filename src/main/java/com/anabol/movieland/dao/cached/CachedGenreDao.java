@@ -50,4 +50,14 @@ public class CachedGenreDao implements GenreDao {
     public List<Genre> getByMovieId(int movieId) {
         return genreDao.getByMovieId(movieId);
     }
+
+    @Override
+    public void add(int movieId, int genreId) {
+        genreDao.add(movieId, genreId);
+    }
+
+    @Override
+    public void deleteByMovieId(int movieId) {
+        genreDao.deleteByMovieId(movieId);
+    }
 }

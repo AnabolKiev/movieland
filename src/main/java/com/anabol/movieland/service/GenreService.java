@@ -8,4 +8,6 @@ import java.util.List;
 public interface GenreService {
     List<Genre> getAll();
     void enrich(Movie movie);
+    void add(int movieId, int genreId);
+    void deleteByMovieId(int movieId);
 }
