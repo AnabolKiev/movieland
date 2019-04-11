@@ -21,6 +21,8 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -51,6 +53,7 @@ public class ReviewControllerITest {
         user.setRole(UserRole.USER);
         Session session = new Session("12345", user, LocalDateTime.now());
         when(securityService.getByToken("12345")).thenReturn(Optional.of(session));
+        when(securityService.validateByTokenAndRole(anyString(), anyList())).thenReturn(Optional.of(user));
 
         mockMvc.perform(post("/review").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content("{\"movieId\" : 1,\"text\" : \"Very bad movie\"}")

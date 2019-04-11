@@ -1,6 +1,7 @@
 package com.anabol.movieland.service.impl;
 
 import com.anabol.movieland.entity.User;
+import com.anabol.movieland.entity.UserRole;
 import com.anabol.movieland.service.SecurityService;
 import com.anabol.movieland.service.UserService;
 import com.anabol.movieland.web.auth.Session;
@@ -60,5 +61,16 @@ public class DefaultSecurityService implements SecurityService {
     @Value("${session.expirationHours:2}")
     public void setSessionLengthHours(int sessionLengthHours) {
         this.sessionLengthHours = sessionLengthHours;
+    }
+
+    @Override
+    public Optional<User> validateByTokenAndRole(String token, List<UserRole> expectedRoles) {
+        if (token != null) {
+            Optional<Session> sessionOptional = getByToken(token);
+            if (sessionOptional.isPresent() && expectedRoles.contains(sessionOptional.get().getUser())) {
+                return Optional.of(sessionOptional.get().getUser());
+            }
+        }
+        return Optional.empty();
     }
 }

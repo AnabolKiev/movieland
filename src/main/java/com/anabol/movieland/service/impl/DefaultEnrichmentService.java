@@ -2,8 +2,6 @@ package com.anabol.movieland.service.impl;
 
 import com.anabol.movieland.entity.Movie;
 import com.anabol.movieland.service.*;
-import com.anabol.movieland.web.utils.Currency;
-import com.anabol.movieland.web.utils.RequestParameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +10,22 @@ import org.springframework.stereotype.Service;
 public class DefaultEnrichmentService implements EnrichmentService {
     private final CountryService countryService;
     private final GenreService genreService;
-    private final ReviewService reviewService;
 
     @Override
     public void enrich(Movie movie) {
         countryService.enrich(movie);
         genreService.enrich(movie);
-        reviewService.enrich(movie);
+    }
+
+    @Override
+    public void saveDetails(Movie movie) {
+        movie.getCountries().stream().forEach(country -> countryService.add(movie.getId(), country.getId()));
+        movie.getGenres().stream().forEach(genre -> genreService.add(movie.getId(), genre.getId()));
+    }
+
+    @Override
+    public void deleteDetails(int movieId) {
+        countryService.deleteByMovieId(movieId);
+        genreService.deleteByMovieId(movieId);
     }
 }
