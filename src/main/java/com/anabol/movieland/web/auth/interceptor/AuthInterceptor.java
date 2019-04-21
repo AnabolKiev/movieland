@@ -44,10 +44,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         if (isAuthorized) {
-            log.info("User authorized successfully to post review");
+            log.info("User authorized successfully for action");
             return true;
         }
-        log.warn("Unauthorized attempt to post review");
+        log.warn("Unauthorized attempt");
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
         return false;
     }
