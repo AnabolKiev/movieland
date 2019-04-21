@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,12 +16,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JdbcCountryDao implements CountryDao {
     private static final CountryMapper COUNTRY_MAPPER = new CountryMapper();
+    private static final String GET_ALL_QUERY = "SELECT id, name FROM country";
     private static final String GET_BY_MOVIE_QUERY = "SELECT DISTINCT c.id, c.name FROM movieCountry mc, country c " +
             "WHERE mc.countryId = c.id AND mc.movieId = ?";
     private static final String INSERT_QUERY = "INSERT INTO movieCountry(movieId, countryId) VALUES (?, ?)";
     private static final String DELETE_BY_MOVIE_QUERY = "DELETE FROM movieCountry WHERE movieId = ?";
 
     private final JdbcTemplate jdbcTemplate;
+
+    @Override
+    public List<Country> getAll() {
+        return jdbcTemplate.query(GET_ALL_QUERY, COUNTRY_MAPPER);
+    }
 
     @Override
     public List<Country> getByMovieId(int movieId) {

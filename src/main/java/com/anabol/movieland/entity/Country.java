@@ -2,15 +2,19 @@ package com.anabol.movieland.entity;
 
 import lombok.*;
 
-@Setter
 @Getter
 @ToString
-@NoArgsConstructor
 public class Country {
-    private int id;
+
+    private final int id;
     private String name;
 
     public Country(int id) {
         this.id = id;
+    }
+
+    public Country(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 }

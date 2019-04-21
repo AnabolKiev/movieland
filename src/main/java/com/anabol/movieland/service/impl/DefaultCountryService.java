@@ -15,6 +15,11 @@ public class DefaultCountryService implements CountryService {
     private final CountryDao countryDao;
 
     @Override
+    public List<Country> getAll() {
+        return countryDao.getAll();
+    }
+
+    @Override
     public void enrich(Movie movie) {
         movie.setCountries(countryDao.getByMovieId(movie.getId()));
     }

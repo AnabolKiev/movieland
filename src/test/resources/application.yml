@@ -4,6 +4,9 @@ movie:
 genre:
   refreshCron: "0 0 */4 * * ?"
 
+country:
+  refreshCron: "0 0 */4 * * ?"
+
 currency:
   url: "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json"
   refreshCron: "0 0 8 * * ?"

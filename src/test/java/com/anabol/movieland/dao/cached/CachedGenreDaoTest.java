@@ -12,10 +12,8 @@ public class CachedGenreDaoTest {
     @Test
     public void testGetAll() throws Exception {
         JdbcGenreDao jdbcGenreDaoMock = mock(JdbcGenreDao.class);
-
         Genre firstGenre = new Genre(1, "драма");
         Genre secondGenre = new Genre(2, "криминал");
-
         when(jdbcGenreDaoMock.getAll()).thenReturn(Arrays.asList(firstGenre, secondGenre));
 
         CachedGenreDao cachedGenreDao = new CachedGenreDao(jdbcGenreDaoMock);
