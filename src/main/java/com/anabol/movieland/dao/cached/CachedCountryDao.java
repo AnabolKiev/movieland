@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -30,7 +31,7 @@ public class CachedCountryDao implements CountryDao {
 
     @Override
     public List<Country> getAll() {
-        return countries;
+        return new ArrayList(countries);
     }
 
     @Override
