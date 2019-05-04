@@ -1,5 +1,7 @@
 package com.anabol.movieland.web.controller;
 
+import com.anabol.movieland.config.RootConfig;
+import com.anabol.movieland.config.ServletConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/action-servlet.xml",
-        "file:src/main/webapp/WEB-INF/applicationContext.xml"})
+@ContextConfiguration(classes = {RootConfig.class, ServletConfig.class})
 @WebAppConfiguration
 public class CountryControllerITest {
 

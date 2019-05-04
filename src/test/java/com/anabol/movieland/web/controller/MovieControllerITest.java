@@ -1,5 +1,8 @@
 package com.anabol.movieland.web.controller;
 
+import com.anabol.movieland.config.RootConfig;
+import com.anabol.movieland.config.ServletConfig;
+import com.anabol.movieland.config.TestContext;
 import com.anabol.movieland.dao.CurrencyDao;
 import com.anabol.movieland.entity.User;
 import com.anabol.movieland.service.SecurityService;
@@ -11,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -33,8 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:testCurrencyContext.xml", "file:src/main/webapp/WEB-INF/action-servlet.xml",
-        "file:src/main/webapp/WEB-INF/applicationContext.xml", "classpath:testSecurityContext.xml"})
+@ContextConfiguration(classes = {RootConfig.class, ServletConfig.class, TestContext.class})
+@ActiveProfiles({"testMocks"})
 @WebAppConfiguration
 public class MovieControllerITest {
     private MockMvc mockMvc;
@@ -145,7 +149,6 @@ public class MovieControllerITest {
 
     @Test
     public void testAdd() throws Exception {
-        when(currencyDao.getRate(Currency.UAH)).thenReturn(1.00);
         User user = new User();
         user.setId(1);
         Session session = new Session("12345", user, LocalDateTime.now());

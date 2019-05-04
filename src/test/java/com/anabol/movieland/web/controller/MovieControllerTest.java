@@ -1,5 +1,8 @@
 package com.anabol.movieland.web.controller;
 
+import com.anabol.movieland.config.RootConfig;
+import com.anabol.movieland.config.ServletConfig;
+import com.anabol.movieland.config.TestMovieServiceContext;
 import com.anabol.movieland.entity.Movie;
 import com.anabol.movieland.service.MovieService;
 import com.anabol.movieland.web.utils.RequestParameters;
@@ -10,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -29,7 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:testContext.xml", "file:src/main/webapp/WEB-INF/action-servlet.xml", "file:src/main/webapp/WEB-INF/applicationContext.xml"})
+@ContextConfiguration(classes = {TestMovieServiceContext.class, RootConfig.class, ServletConfig.class})
+@ActiveProfiles({"movieServiceMock"})
 @WebAppConfiguration
 public class MovieControllerTest {
 
