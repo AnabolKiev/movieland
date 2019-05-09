@@ -3,15 +3,12 @@ package com.anabol.movieland.web.controller;
 import com.anabol.movieland.config.RootConfig;
 import com.anabol.movieland.config.ServletConfig;
 import com.anabol.movieland.config.TestContext;
-import com.anabol.movieland.dao.CurrencyDao;
 import com.anabol.movieland.entity.User;
 import com.anabol.movieland.service.SecurityService;
 import com.anabol.movieland.web.auth.Session;
-import com.anabol.movieland.web.utils.Currency;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -45,16 +42,11 @@ public class MovieControllerITest {
     @Autowired
     private WebApplicationContext webApplicationContext;
     @Autowired
-    private CurrencyDao currencyDao;
-    @Autowired
     private SecurityService securityService;
 
     @Before
     public void setUp() {
-        Mockito.reset(currencyDao);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        when(currencyDao.getRate(Currency.UAH)).thenReturn(1.00);
-        when(currencyDao.getRate(Currency.USD)).thenReturn(27.15);
     }
 
     @Test
