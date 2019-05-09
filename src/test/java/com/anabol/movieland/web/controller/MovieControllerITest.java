@@ -22,6 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.anyList;
@@ -75,7 +76,7 @@ public class MovieControllerITest {
                 .andExpect(jsonPath("$.genres[0].name", is("драма")))
                 .andExpect(jsonPath("$.genres[1].id", is(2)))
                 .andExpect(jsonPath("$.genres[1].name", is("криминал")))
-                .andExpect(jsonPath("$.reviews", hasSize(2)))
+                .andExpect(jsonPath("$.reviews", hasSize(greaterThanOrEqualTo(2))))
                 .andExpect(jsonPath("$.reviews[0].id", is(1)))
                 .andExpect(jsonPath("$.reviews[0].user.id", is(1)))
                 .andExpect(jsonPath("$.reviews[0].user.nickName", is("Дарлин Эдвардс")))
@@ -120,7 +121,7 @@ public class MovieControllerITest {
                 .andExpect(jsonPath("$.genres[0].name", is("драма")))
                 .andExpect(jsonPath("$.genres[1].id", is(2)))
                 .andExpect(jsonPath("$.genres[1].name", is("криминал")))
-                .andExpect(jsonPath("$.reviews", hasSize(2)))
+                .andExpect(jsonPath("$.reviews", hasSize(greaterThanOrEqualTo(2))))
                 .andExpect(jsonPath("$.reviews[0].id", is(1)))
                 .andExpect(jsonPath("$.reviews[0].user.id", is(1)))
                 .andExpect(jsonPath("$.reviews[0].user.nickName", is("Дарлин Эдвардс")))
