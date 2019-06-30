@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 @EnableScheduling
@@ -77,5 +79,10 @@ public class RootConfig {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    public ExecutorService executorService(@Value("${movie.enrichment.threads:2}") int threads) {
+        return Executors.newFixedThreadPool(threads);
     }
 }

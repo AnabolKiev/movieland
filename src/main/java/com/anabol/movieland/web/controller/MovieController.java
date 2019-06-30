@@ -45,7 +45,7 @@ public class MovieController {
 
     @JsonView(Views.MovieShort.class)
     @GetMapping(value = "/genre/{genreId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Movie> getByGenre(@PathVariable("genreId") int genreId,
+    public List<Movie> getByGenre(@PathVariable int genreId,
                                   @RequestParam(value = "rating", required = false) SortDirection ratingSortDirection,
                                   @RequestParam(value = "price", required = false) SortDirection priceSortDirection) {
         RequestParameters requestParameters = createRequestParameters(ratingSortDirection, priceSortDirection);
@@ -56,7 +56,8 @@ public class MovieController {
     }
 
     @GetMapping(value = "/{movieId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Movie getById(@PathVariable int movieId, @RequestParam(value = "currency", required = false, defaultValue = "UAH") Currency currency) {
+    public Movie getById(@PathVariable int movieId,
+                         @RequestParam(value = "currency", required = false, defaultValue = "UAH") Currency currency) {
         RequestParameters requestParameters = new RequestParameters();
         requestParameters.setCurrency(currency);
         return movieService.getById(movieId, requestParameters);

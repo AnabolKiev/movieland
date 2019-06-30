@@ -1,5 +1,8 @@
 movie:
   randomLimit: 3
+  enrichment:
+    threads: 2
+    timeoutSeconds: 5
 
 genre:
   refreshCron: "0 0 */4 * * ?"
