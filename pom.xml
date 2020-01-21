@@ -11,7 +11,7 @@
 
     <properties>
         <jdk.version>1.8</jdk.version>
-        <spring.version>5.1.5.RELEASE</spring.version>
+        <spring.version>5.2.3.RELEASE</spring.version>
         <servletapi.version>3.0.1</servletapi.version>
         <mysqlconn.version>8.0.15</mysqlconn.version>
         <dbcp.version>2.6.0</dbcp.version>
