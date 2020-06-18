@@ -17,7 +17,7 @@
         <dbcp.version>2.6.0</dbcp.version>
         <h2database.version>1.4.199</h2database.version>
         <snakeyaml.version>1.24</snakeyaml.version>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson.version>2.10.0.pr1</jackson.version>
         <lombok.version>1.18.6</lombok.version>
         <logback.version>1.2.3</logback.version>
         <modelMapper.version>2.3.2</modelMapper.version>
