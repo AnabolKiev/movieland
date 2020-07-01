@@ -13,7 +13,7 @@
         <jdk.version>1.8</jdk.version>
         <spring.version>5.1.5.RELEASE</spring.version>
         <servletapi.version>3.0.1</servletapi.version>
-        <mysqlconn.version>8.0.15</mysqlconn.version>
+        <mysqlconn.version>8.0.16</mysqlconn.version>
         <dbcp.version>2.6.0</dbcp.version>
         <h2database.version>1.4.199</h2database.version>
         <snakeyaml.version>1.24</snakeyaml.version>
